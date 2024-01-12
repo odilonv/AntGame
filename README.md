@@ -1,8 +1,8 @@
 <h1> Projet de développement : Système multi-agents et recherche des plus courts chemins </h1>
 
 <div align="center">
-    <img src="images/startDemo.png" height="300">
-    <img src="images/endDemo.png" height="300">
+    <img src="web/images/startDemo.png" height="300">
+    <img src="web/images/endDemo.png" height="300">
 </div>
 
 <h2>Objectif et positionnement du projet</h2>
@@ -23,7 +23,7 @@ Dans le cadre de ce projet, l'environnement est représenté par une grille dans
   </ul>
 
   <div align="center">
-    <img src="images/cellules.png" height="150" />
+    <img src="web/images/cellules.png" height="150" />
   </div>
 </div>
 
@@ -91,7 +91,7 @@ Ce projet est inspiré de l'algorithme de colonies de fourmis qui est une métho
 <br>
 
 <div align="center">
-    <img src="images/algoAnt.png" height="300"/>
+    <img src="web/images/algoAnt.png" height="300"/>
     <h6>https://fr.wikipedia.org/wiki/Algorithme_de_colonies_de_fourmis#/media/Fichier:Aco_branches.svg</h6>
 </div>
 
@@ -101,7 +101,7 @@ Dans le cadre de ce projet, nous pouvons résumer l'algorithme de colonies de fo
 <br>
 
   <div align="center">
-    <img src="images/formule1.png" width="250">
+    <img src="web/images/formule1.png" width="250">
   </div>
 
 <br>
@@ -115,7 +115,7 @@ La seconde équation permet, une fois la fourmi retournée à son point de dépa
 <br>
 
   <div align="center">
-    <img src="images/formule2.png" width="250">
+    <img src="web/images/formule2.png" width="250">
   </div>
 
 <br>
