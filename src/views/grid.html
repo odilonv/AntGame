@@ -32,17 +32,16 @@
     </div>
 
     <script type="module">
-        /* -- DECLARATION ET INITIALISATION DE PLUSIEURS VARIABLES (AVEC UNE PORTEE GLOBALE) -- */
-        import Grid from '../../models/grid.js';
+        import Grid from '../models/grid.js';
 
-        let size = 10;
+        let size = 15;
         let myGrid = new Grid(size);
         myGrid.drawGrid();
 
 
         let _nbLines = myGrid.grid.length; // Nombre d'éléments dans le tableau (nombre de lignes).
         let _nbColumns = myGrid.grid[0].length; // Nombre de colonnes.
-        let _cellSize = 40; // La taille d'une cellule en pixel.
+        let _cellSize = 50; // La taille d'une cellule en pixel.
 
 
         /* -- DECLARATION DE PLUSIEURS FONCTIONS -- */
@@ -156,17 +155,21 @@
         let tileSize = 128;
 
         const HEXTILES_IMAGE = new Image();
-        HEXTILES_IMAGE.src = '../tiles/tree.png';
+        HEXTILES_IMAGE.src = 'web/images/tiles/tree.png';
 
         Promise.all([
-            new Promise((resolve) => { HEXTILES_IMAGE.addEventListener('load', () => { resolve(); }); })
+            new Promise((resolve) => {
+                myGrid.grid[0][0].getTile().addEventListener('load', () => {
+                    resolve();
+                });
+            })
         ])
             .then(() => {
                 let ctx = canvas.getContext('2d');
 
                 for (let i = 0; i < _nbLines; i++) {
                     for (let j = 0; j < _nbColumns; j++) {
-                        let tileIndex = myGrid.grid[i][j];
+                        let tileIndex = myGrid.grid[i][j].tile;
                         let sx = tileIndex * tileSize;
                         let sy = 0;
                         let sWidth = tileSize; // The width of the tile in the image
@@ -176,7 +179,7 @@
                         let dWidth = _cellSize; // The width of the tile on the canvas
                         let dHeight = _cellSize; // The height of the tile on the canvas
 
-                        ctx.drawImage(HEXTILES_IMAGE, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+                        ctx.drawImage(myGrid.grid[i][j].getTile(), sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
                     }
                 }
             });
