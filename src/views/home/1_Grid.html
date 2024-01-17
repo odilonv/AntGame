@@ -31,27 +31,17 @@
         <canvas id="my_canvas"></canvas>
     </div>
 
-    <script>
+    <script type="module">
         /* -- DECLARATION ET INITIALISATION DE PLUSIEURS VARIABLES (AVEC UNE PORTEE GLOBALE) -- */
+        import Grid from '../../models/grid.js';
 
-        // = [
-        //     [0, 0, 0],
-        //     [0, 1, 0],
-        //     [0, 2, 0],
-        //     [0, 0, 0],
-        // ]; Déclaration et initialisation d'un Array.
+        let size = 10;
+        let myGrid = new Grid(size);
+        myGrid.drawGrid();
 
-        let _grid = [];
 
-        for (let i = 0; i < 17; i++) {
-            _grid[i] = [];
-            for (let j = 0; j < 17; j++) {
-                _grid[i][j] = 0;
-            }
-        }
-
-        let _nbLines = _grid.length; // Nombre d'éléments dans le tableau (nombre de lignes).
-        let _nbColumns = _grid[0].length; // Nombre de colonnes.
+        let _nbLines = myGrid.grid.length; // Nombre d'éléments dans le tableau (nombre de lignes).
+        let _nbColumns = myGrid.grid[0].length; // Nombre de colonnes.
         let _cellSize = 40; // La taille d'une cellule en pixel.
 
 
@@ -176,7 +166,7 @@
 
                 for (let i = 0; i < _nbLines; i++) {
                     for (let j = 0; j < _nbColumns; j++) {
-                        let tileIndex = _grid[i][j];
+                        let tileIndex = myGrid.grid[i][j];
                         let sx = tileIndex * tileSize;
                         let sy = 0;
                         let sWidth = tileSize; // The width of the tile in the image
@@ -189,7 +179,7 @@
                         ctx.drawImage(HEXTILES_IMAGE, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
                     }
                 }
-            }); j
+            });
 
 
         /*
