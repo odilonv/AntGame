@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
         }
     </style>
 </head>
+
 <body>
     <div style="display: flex; gap: 20px; align-items: flex-start;">
         <div style="display: flex; gap: 10px; flex-direction: column;">
@@ -25,22 +27,28 @@
             </select>
             <button id="my_button"> Valider </button>
         </div>
-    
+
         <canvas id="my_canvas"></canvas>
     </div>
 
     <script>
         /* -- DECLARATION ET INITIALISATION DE PLUSIEURS VARIABLES (AVEC UNE PORTEE GLOBALE) -- */
 
+        // let _grid = [
+        //     [0, 0, 0, 0],
+        //     [0, 0, 0, 0],
+        //     [0, 0, 0, 0]
+        // ]; // Déclaration et initialisation d'un Array.
         let _grid = [
-            [0, 0, 0, 0],
-            [0, 0, 0, 0],
-            [0, 0, 0, 0]
-        ]; // Déclaration et initialisation d'un Array.
-        
-        let _nbLines   = _grid.length; // Nombre d'éléments dans le tableau (nombre de lignes).
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 2, 0],
+            [0, 0, 0],
+        ];
+
+        let _nbLines = _grid.length; // Nombre d'éléments dans le tableau (nombre de lignes).
         let _nbColumns = _grid[0].length; // Nombre de colonnes.
-        let _cellSize  = 100; // La taille d'une cellule en pixel.
+        let _cellSize = 100; // La taille d'une cellule en pixel.
 
 
         /* -- DECLARATION DE PLUSIEURS FONCTIONS -- */
@@ -63,7 +71,7 @@
             for (let i_line = 0; i_line < _nbLines; i_line++) { // Boucles for pour afficher la grille.
                 for (let i_col = 0; i_col < _nbColumns; i_col++) {
                     DrawingFunction( // Exécution de la fonction en paramètre (callback).
-                        {x: i_col * _cellSize, y: i_line * _cellSize},
+                        { x: i_col * _cellSize, y: i_line * _cellSize },
                         _cellSize
                     );
                 }
@@ -81,9 +89,9 @@
          * @param {string} color
          * return {function(startPosition: {x: number, y: number}, width: number): void}
          */
-        let DrawColoredSquare = function(ctx, shape, color) { // Initialisation de la variable DrawColoredSquare à partir de la déclaration d'une fonction anonyme.
+        let DrawColoredSquare = function (ctx, shape, color) { // Initialisation de la variable DrawColoredSquare à partir de la déclaration d'une fonction anonyme.
             ctx.fillStyle = color;
-            
+
             /* ------------------------------------------------------------------------------------------------------------------------------------------------------------- */
             /*    Création d'une fermeture (closure en anglais).                                                                                                             */
             /*    Une fermeture donne accès à la portée d'une fonction externe à partir d'une fonction interne (on dit aussi que la fonction « capture son environnement »). */
@@ -115,7 +123,7 @@
             }
 
             /* La fonction renvoyée se souviendra de son environnement et donc du contexte de dessin (ctx) */
-            return shape == 0 ? DrawSquare: DrawCircle; // Condition ternaire.
+            return shape == 0 ? DrawSquare : DrawCircle; // Condition ternaire.
         };
 
 
@@ -124,20 +132,20 @@
         /**
          * Déclaration d'une fonction auto-exécutée (s'exécute lorsque la page est chargée).
          */
-        (function() {
+        (function () {
             let canvas = document.getElementById('my_canvas'); // Récupération d'une balise HTML par son ID.
-            canvas.width  = _nbColumns * _cellSize;
+            canvas.width = _nbColumns * _cellSize;
             canvas.height = _nbLines * _cellSize;
             let ctx = canvas.getContext('2d'); // Récupération de la surface de dessin.
 
             let button = document.getElementById('my_button');
             /* Exécuter une action lors d'un évènement de changement de valeur */
-            button.addEventListener('click', function(event) {
+            button.addEventListener('click', function (event) {
                 let shape = document.getElementById('my_shape');
                 let color = document.getElementById('my_color');
                 /* Effet de closure pour la récupération du contexte de dessin */
                 ctx.clearRect(0, 0, canvas.width, canvas.height); // Réinitialise en totalité (ou en partie) le canvas (ici en totalité).
-                
+
                 /* ------------------------------------------------------------------------------------------------------------------------------------------------------------- */
                 /*    ColoredSquareFunction est une variable qui fait référence à une fonction.                                                                                  */
                 /*    Cette fonction est issue du return de la fonction DrawColoredSquare.                                                                                       */
@@ -159,35 +167,43 @@
             Utiliser pour cela:
 
             * la grille suivante:
+*/
 
-            let _grid = [
-                [0, 0, 0],
-                [0, 1, 0],
-                [0, 2, 0],
-                [0, 0, 0],
-            ];
+        /* les trois premières tuiles de 32px (en ligne) issues de l'image TP_AntAlgorithm/tiles/foodAndColony.png.
+        * le code suivant pour charger le png et écrire votre programme.
 
-            * les trois premières tuiles de 32px (en ligne) issues de l'image TP_AntAlgorithm/tiles/foodAndColony.png.
-            * le code suivant pour charger le png et écrire votre programme.
-
-            ```
-            const HEXTILES_IMAGE = new Image();
-            HEXTILES_IMAGE.src = 'path/of/png';
-            Promise.all([
-                new Promise( (resolve) => {HEXTILES_IMAGE.addEventListener('load', () => { resolve();}); })
-            ])
+        ```*/
+        const HEXTILES_IMAGE = new Image();
+        HEXTILES_IMAGE.src = '../tiles/foodAndColony.png';
+        Promise.all([
+            new Promise((resolve) => { HEXTILES_IMAGE.addEventListener('load', () => { resolve(); }); })
+        ])
             .then(() => {
-                // Votre code ici.
+                let canvas = document.getElementById('my_canvas'); // Assurez-vous d'avoir un élément canvas avec l'ID 'canvas' dans votre HTML
+                let ctx = canvas.getContext('2d');
+
+                const TILE_SIZE = 32; // La taille de chaque tuile dans l'image
+
+                for (let i = 0; i < _grid.length; i++) {
+                    for (let j = 0; j < _grid[i].length; j++) {
+                        let tile = _grid[i][j];
+                        let x = j * TILE_SIZE;
+                        let y = i * TILE_SIZE;
+
+                        // Dessine la tuile sur le canvas
+                        ctx.drawImage(HEXTILES_IMAGE, tile * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE, x, y, TILE_SIZE, TILE_SIZE);
+                    }
+                }
             });
-            ```
-
-            ########################################################
-
-            Exercice 2:
-            -----------
-            Effectuer ce même exercice à travers l'architecture MVC (https://github.com/PAJEAN/cours_javascript/tree/master/TP/MVC) en utilisant des fonctions callback entre les classes.
-        */
+        /*
+                    ########################################################
+        
+                    Exercice 2:
+                    -----------
+                    Effectuer ce même exercice à travers l'architecture MVC (https://github.com/PAJEAN/cours_javascript/tree/master/TP/MVC) en utilisant des fonctions callback entre les classes.
+                */
     </script>
-    
+
 </body>
+
 </html>
