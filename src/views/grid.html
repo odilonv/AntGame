@@ -31,28 +31,17 @@
         <canvas id="my_canvas"></canvas>
     </div>
 
-    <script>
-        /* -- DECLARATION ET INITIALISATION DE PLUSIEURS VARIABLES (AVEC UNE PORTEE GLOBALE) -- */
+    <script type="module">
+        import Grid from '../models/grid.js';
 
-        // = [
-        //     [0, 0, 0],
-        //     [0, 1, 0],
-        //     [0, 2, 0],
-        //     [0, 0, 0],
-        // ]; Déclaration et initialisation d'un Array.
+        let size = 15;
+        let myGrid = new Grid(size);
+        myGrid.drawGrid();
 
-        let _grid = [];
 
-        for (let i = 0; i < 17; i++) {
-            _grid[i] = [];
-            for (let j = 0; j < 17; j++) {
-                _grid[i][j] = 0;
-            }
-        }
-
-        let _nbLines = _grid.length; // Nombre d'éléments dans le tableau (nombre de lignes).
-        let _nbColumns = _grid[0].length; // Nombre de colonnes.
-        let _cellSize = 40; // La taille d'une cellule en pixel.
+        let _nbLines = myGrid.grid.length; // Nombre d'éléments dans le tableau (nombre de lignes).
+        let _nbColumns = myGrid.grid[0].length; // Nombre de colonnes.
+        let _cellSize = 50; // La taille d'une cellule en pixel.
 
 
         /* -- DECLARATION DE PLUSIEURS FONCTIONS -- */
@@ -166,17 +155,21 @@
         let tileSize = 128;
 
         const HEXTILES_IMAGE = new Image();
-        HEXTILES_IMAGE.src = '../tiles/tree.png';
+        HEXTILES_IMAGE.src = 'web/images/tiles/tree.png';
 
         Promise.all([
-            new Promise((resolve) => { HEXTILES_IMAGE.addEventListener('load', () => { resolve(); }); })
+            new Promise((resolve) => {
+                myGrid.grid[0][0].getTile().addEventListener('load', () => {
+                    resolve();
+                });
+            })
         ])
             .then(() => {
                 let ctx = canvas.getContext('2d');
 
                 for (let i = 0; i < _nbLines; i++) {
                     for (let j = 0; j < _nbColumns; j++) {
-                        let tileIndex = _grid[i][j];
+                        let tileIndex = myGrid.grid[i][j].tile;
                         let sx = tileIndex * tileSize;
                         let sy = 0;
                         let sWidth = tileSize; // The width of the tile in the image
@@ -186,10 +179,10 @@
                         let dWidth = _cellSize; // The width of the tile on the canvas
                         let dHeight = _cellSize; // The height of the tile on the canvas
 
-                        ctx.drawImage(HEXTILES_IMAGE, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+                        ctx.drawImage(myGrid.grid[i][j].getTile(), sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
                     }
                 }
-            }); j
+            });
 
 
         /*
@@ -200,41 +193,34 @@
             Utiliser pour cela:
 
             * la grille suivante:
-*/
 
-        /* les trois premières tuiles de 32px (en ligne) issues de l'image TP_AntAlgorithm/tiles/foodAndColony.png.
-        * le code suivant pour charger le png et écrire votre programme.
+            let _grid = [
+                [0, 0, 0],
+                [0, 1, 0],
+                [0, 2, 0],
+                [0, 0, 0],
+            ];
 
-        ```*/
-        const HEXTILES_IMAGE = new Image();
-        HEXTILES_IMAGE.src = '../tiles/foodAndColony.png';
-        Promise.all([
-            new Promise((resolve) => { HEXTILES_IMAGE.addEventListener('load', () => { resolve(); }); })
-        ])
+            * les trois premières tuiles de 32px (en ligne) issues de l'image TP_AntAlgorithm/tiles/foodAndColony.png.
+            * le code suivant pour charger le png et écrire votre programme.
+
+            ```
+            const HEXTILES_IMAGE = new Image();
+            HEXTILES_IMAGE.src = 'path/of/png';
+            Promise.all([
+                new Promise( (resolve) => {HEXTILES_IMAGE.addEventListener('load', () => { resolve();}); })
+            ])
             .then(() => {
-                let canvas = document.getElementById('my_canvas'); // Assurez-vous d'avoir un élément canvas avec l'ID 'canvas' dans votre HTML
-                let ctx = canvas.getContext('2d');
-
-                const TILE_SIZE = 32; // La taille de chaque tuile dans l'image
-
-                for (let i = 0; i < _grid.length; i++) {
-                    for (let j = 0; j < _grid[i].length; j++) {
-                        let tile = _grid[i][j];
-                        let x = j * TILE_SIZE;
-                        let y = i * TILE_SIZE;
-
-                        // Dessine la tuile sur le canvas
-                        ctx.drawImage(HEXTILES_IMAGE, tile * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE, x, y, TILE_SIZE, TILE_SIZE);
-                    }
-                }
+                // Votre code ici.
             });
-        /*
-                    ########################################################
-        
-                    Exercice 2:
-                    -----------
-                    Effectuer ce même exercice à travers l'architecture MVC (https://github.com/PAJEAN/cours_javascript/tree/master/TP/MVC) en utilisant des fonctions callback entre les classes.
-                */
+            ```
+
+            ########################################################
+
+            Exercice 2:
+            -----------
+            Effectuer ce même exercice à travers l'architecture MVC (https://github.com/PAJEAN/cours_javascript/tree/master/TP/MVC) en utilisant des fonctions callback entre les classes.
+        */
     </script>
 
 </body>
