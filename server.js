@@ -18,7 +18,7 @@ const getContentType = (filePath) => {
 
 const server = http.createServer((req, res) => {
     let filePath;
-    if (req.url === '/' || !req.url.startsWith('/web/')) {
+    if (req.url === '/') {
         filePath = path.join(__dirname, 'web', 'index.html');
     } else {
         filePath = path.join(__dirname, req.url);
