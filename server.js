@@ -18,10 +18,10 @@ const getContentType = (filePath) => {
 
 const server = http.createServer((req, res) => {
     let filePath;
-    if (req.url.startsWith('/web/')) {
-        filePath = path.join(__dirname, req.url);
+    if (req.url === '/' || !req.url.startsWith('/web/')) {
+        filePath = path.join(__dirname, 'web', 'index.html');
     } else {
-        filePath = req.url === '/' ? path.join(__dirname, 'src', 'views', 'grid.html') : path.join(__dirname, 'src', req.url);
+        filePath = path.join(__dirname, req.url);
     }
     fs.readFile(filePath, (err, data) => {
         if (err) {
