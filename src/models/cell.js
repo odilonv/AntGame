@@ -6,7 +6,7 @@ class Cell {
     }
 
 
-    GetType() { return this.constructor.name; }
+    getType() { return this.constructor.name; }
     getTile() { return this.tile; }
 }
 

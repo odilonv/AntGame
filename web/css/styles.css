@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
+
+body {
+    background: #B9A88B;
+    font-family: 'Inter', sans-serif;
+}
+
+.main {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+#my_canvas {
+    border: 3px solid white;
+    background-color: #72751B;
+    border-radius: 20px;
+}
+
+.sidebar {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    border: 2px solid whitesmoke;
+    background-color: whitesmoke;
+    border-radius: 20px;
+}
+
+#logo {
+    width: 350px;
+    height: 350px;
+    border-radius: 20px;
+}
+
+#timer {
+    font-size: 5em;
+    padding: 10px;
+    color: #B9A88B;
+    font-weight: bold;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+}
+
+.buttons>button {
+    width: 50%;
+    border: 1px solid white;
+    height: 50px;
+    font-weight: bold;
+    color: white;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.buttons>button:nth-child(2):hover {
+    background-color: #B9A88B;
+}
+
+.buttons>button:nth-child(1):hover {
+    background-color: #B9A88B;
+}
+
+.buttons>button:nth-child(1) {
+    border-radius: 20px 0 0 20px;
+    background-color: #4e473a;
+}
+
+.buttons>button:nth-child(2) {
+    border-radius: 0 20px 20px 0;
+    background-color: #5e5648;
+}

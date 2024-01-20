@@ -11,6 +11,8 @@ const getContentType = (filePath) => {
             return 'text/javascript';
         case '.png':
             return 'image/png';
+        case '.css':
+            return 'text/css';
         default:
             return 'text/plain';
     }
