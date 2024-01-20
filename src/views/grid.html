@@ -33,6 +33,7 @@
 
     <script type="module">
         import Grid from '../models/grid.js';
+        import Agent from '../models/agent.js';
 
         let size = 15;
         let myGrid = new Grid(size);
@@ -44,22 +45,6 @@
         let _cellSize = 50; // La taille d'une cellule en pixel.
 
 
-        /* -- DECLARATION DE PLUSIEURS FONCTIONS -- */
-
-        /* -------------------------------------------------------------------------------------------------------------------------------------------------------- */
-        /* En JavaScript, les fonctions sont des objets. Cela signifie qu'elles peuvent être manipulées et échangées (e.g. le paramètre DrawingFunction ci-dessous) */
-        /* -------------------------------------------------------------------------------------------------------------------------------------------------------- */
-
-        /**
-         * @callback DrawingCallback
-         * @param {{x: number, y: number}} startPosition
-         * @param {number} width
-         */
-
-        /**
-         * Déclaration d'une fonction nommée pour dessiner un carré au sein d'un canvas.
-         * @param {DrawingCallback} DrawingFunction
-         */
         function Display(DrawingFunction) { // Le paramètre DrawingFunction est une fonction.
             for (let i_line = 0; i_line < _nbLines; i_line++) { // Boucles for pour afficher la grille.
                 for (let i_col = 0; i_col < _nbColumns; i_col++) {
@@ -71,42 +56,17 @@
             }
         }
 
-        /* ----------------------------------------------------------------------------------- */
-        /* Le nom d'une fonction est facultatif. Dans ces cas là, la fonction est dite anonyme */
-        /* ----------------------------------------------------------------------------------- */
-
-        /**
-         * Retourne la fonction de dessin adéquate à partir des paramètres de l'utilisateur.
-         * @param {CanvasRenderingContext2D} ctx
-         * @param {number} shape
-         * @param {string} color
-         * return {function(startPosition: {x: number, y: number}, width: number): void}
-         */
         let DrawColoredSquare = function (ctx, shape, color) { // Initialisation de la variable DrawColoredSquare à partir de la déclaration d'une fonction anonyme.
             ctx.fillStyle = color;
 
-            /* ------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-            /*    Création d'une fermeture (closure en anglais).                                                                                                             */
-            /*    Une fermeture donne accès à la portée d'une fonction externe à partir d'une fonction interne (on dit aussi que la fonction « capture son environnement »). */
-            /*    La fonction interne doit être créée directement au sein de la fonction externe pour bénéficer de l'effet de la closure.                                    */
-            /* ------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
-            /**
-             * Déclaration d'une fonction nommée pour dessiner un carré au sein d'un canvas.
-             * @param {{x: number, y: number}}
-             * @param {number}
-             */
             function DrawSquare(startPosition, width) {
                 let padding = 2; // Permet d'avoir une ligne entre les carrés de notre grille.
                 /* ctx fait référence aux paramètres de la fonction externe */
                 ctx.fillRect(startPosition.x, startPosition.y, width - padding, width - padding); // Dessine un carré plein.
             }
 
-            /**
-             * Déclaration d'une fonction nommée pour dessiner un cercle au sein d'un canvas.
-             * @param {{x: number, y: number}}
-             * @param {number}
-             */
+
             function DrawCircle(startPosition, width) {
                 radius = width / 2;
                 /* ctx fait référence aux paramètres de la fonction externe */
@@ -120,11 +80,6 @@
         };
 
 
-        /* -- INITIALISATION DE L'APPLICATION -- */
-
-        /**
-         * Déclaration d'une fonction auto-exécutée (s'exécute lorsque la page est chargée).
-         */
         (function () {
             let canvas = document.getElementById('my_canvas'); // Récupération d'une balise HTML par son ID.
             canvas.width = _nbColumns * _cellSize;
@@ -138,12 +93,6 @@
                 let color = document.getElementById('my_color');
                 /* Effet de closure pour la récupération du contexte de dessin */
                 ctx.clearRect(0, 0, canvas.width, canvas.height); // Réinitialise en totalité (ou en partie) le canvas (ici en totalité).
-
-                /* ------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-                /*    ColoredSquareFunction est une variable qui fait référence à une fonction.                                                                                  */
-                /*    Cette fonction est issue du return de la fonction DrawColoredSquare.                                                                                       */
-                /*    Grâce au phénomène de closure, cette fonction peut accéder aux éléments de sa fonction externe (DrawColoredSquare) tel que le context de dessin.           */
-                /* --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
                 let ColoredSquareFunction = DrawColoredSquare(ctx, shape.value, color.value); // Récupération des value de nos balises <select>.
                 Display(ColoredSquareFunction); // Exécuter la fonction Display avec notre fonction issue du return de DrawColoredSquare.
@@ -170,7 +119,7 @@
                 for (let i = 0; i < _nbLines; i++) {
                     for (let j = 0; j < _nbColumns; j++) {
                         let tileIndex = myGrid.grid[i][j].tile;
-                        let sx = tileIndex * tileSize;
+                        let sx = 0 * tileSize;
                         let sy = 0;
                         let sWidth = tileSize; // The width of the tile in the image
                         let sHeight = tileSize; // The height of the tile in the image
@@ -180,6 +129,23 @@
                         let dHeight = _cellSize; // The height of the tile on the canvas
 
                         ctx.drawImage(myGrid.grid[i][j].getTile(), sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+                        if (myGrid.grid[i][j].getType().toString() == "Free") {
+                            let ants = myGrid.grid[i][j].ants
+                            for (let ant in ants) {
+                                let image = new Image();
+                                image.src = 'web/images/tiles/ant.png';
+                                image.id = "ant"
+                                image.addEventListener('load', () => {
+                                    ctx.drawImage(image, dx, dy, 20, 20);
+                                });
+
+                                setInterval(() => {
+                                    let canvas = document.getElementById('ant');
+                                    let ctx = canvas.getContext('2d');
+                                    ctx.moveTo(ant.x, ant.y);
+                                }, 1000);
+                            }
+                        }
                     }
                 }
             });

@@ -3,10 +3,9 @@ class Cell {
         this.x = x;
         this.y = y;
         this.tile = new Image();
-    }
+    }   
 
-
-    GetType() { return this.constructor.name; }
+    getType() { return this.constructor.name; }
     getTile() { return this.tile; }
 }
 

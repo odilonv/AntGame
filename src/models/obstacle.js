@@ -5,9 +5,6 @@ class Obstacle extends Cell {
         super(x, y);
         this.tile.src = '/web/images/tiles/tree.png';
     }
-
-    getTile() { return this.tile; }
-
 }
 
 export default Obstacle;
