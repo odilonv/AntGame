@@ -5,6 +5,7 @@ class Cell {
         this.tile = new Image();
     }   
 
+
     getType() { return this.constructor.name; }
     getTile() { return this.tile; }
 }
