@@ -4,22 +4,20 @@ let size = 18;
 let myGrid = new Grid(size);
 myGrid.drawGrid();
 
-
 let _nbLines = myGrid.grid.length;
 let _nbColumns = myGrid.grid[0].length;
 let _cellSize = 40;
-
 
 (function () {
     let canvas = document.getElementById('my_canvas');
     canvas.width = _nbColumns * _cellSize;
     canvas.height = _nbLines * _cellSize;
     let ctx = canvas.getContext('2d');
+
 })();
 
 let canvas = document.getElementById('my_canvas');
 let tileSize = 150;
-
 
 function addEventListenersToTiles(tiles, resolve) {
     if (Array.isArray(tiles)) {
@@ -39,11 +37,12 @@ Promise.all(
                 addEventListenersToTiles(tiles, resolve);
             })
         )
+
     )
+
 )
     .then(() => {
         let ctx = canvas.getContext('2d');
-
         for (let i = 0; i < _nbLines; i++) {
             for (let j = 0; j < _nbColumns; j++) {
                 let tiles = myGrid.grid[i][j].getTile();
@@ -60,6 +59,7 @@ Promise.all(
                 let dHeight = sHeight * scale;
 
                 addEventListenersToTiles(tiles, () => {
+                    console.log("position de l'image : " + dx + " " + dy + " ");
                     if (Array.isArray(tiles)) {
                         ctx.drawImage(tiles[0], sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
                         ctx.drawImage(tiles[1], sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
@@ -70,5 +70,3 @@ Promise.all(
             }
         }
     });
-
-

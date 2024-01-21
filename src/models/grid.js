@@ -26,11 +26,28 @@ class Grid {
             for (let j = 0; j < this.size; j++) {
                 if (i === 0 || j === 0 || i === this.size - 1 || j === this.size - 1) {
                     this.grid[i][j] = new Obstacle(i, j);
-                } else {
-                    this.grid[i][j] = new Free(i, j);
-                    if (Math.random() < 0.05) {
-                        let agent = new Agent(i, j);
-                        this.grid[i][j].ants.push(agent);
+                }
+            }
+        }
+    }
+
+    createPath(row, col) {
+        this.grid[row][col] = new Cell(row, col);
+        let shuffledDirections = this.directions.sort(() => Math.random() - 0.5);
+
+        for (let [dx, dy] of shuffledDirections) {
+            let newRow = row + 2 * dx;
+            let newCol = col + 2 * dy;
+
+            if (newRow >= 1 && newRow < this.size - 1 && newCol >= 1 && newCol < this.size - 1) {
+                if (this.grid[newRow][newCol] instanceof Obstacle) {
+                    this.grid[row + dx][col + dy] = new Cell(row + dx, col + dy);
+                    this.createPath(newRow, newCol);
+                } else if (this.grid[newRow][newCol] instanceof Cell) {
+                    this.grid[row][col] = new Free(row + dx, col + dy);
+                    if (Math.random() < 0.5) {
+                        let agent = new Agent(row, col);
+                        this.grid[row][col].ants.push(agent);
                     }
                 }
             }
@@ -131,43 +148,26 @@ class Grid {
     displayAnts() {
         let canvas = document.getElementById('my_canvas');
         let ctx = canvas.getContext('2d');
-        let _cellSize = 50; // La taille d'une cellule en pixel.
-        let padding = 2; // Permet d'avoir une ligne entre les carrés de notre grille
+        let _cellSize = 40; // La taille d'une cellule en pixel.
         let image = new Image();
         image.src = 'web/images/tiles/ant.png';
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[0].length; j++) {
                 if (this.grid[i][j].getType().toString() == "Free") {
-                    ctx.clearRect(i * _cellSize, j * _cellSize, _cellSize, _cellSize); // Efface le canvas.
-                    ctx.fillRect(i * _cellSize, j * _cellSize, _cellSize - padding, _cellSize - padding); // Dessine un carré plein.
+                    // ctx.clearRect(i * _cellSize, j * _cellSize, _cellSize, _cellSize); // Efface le canvas.
+                    // ctx.fillRect(i * _cellSize, j * _cellSize, _cellSize - padding, _cellSize - padding); // Dessine un carré plein.
                     for (let ant of this.grid[i][j].ants) {
+                        console.log("génération de l'image en position : " + i * _cellSize+ " " + j * _cellSize);
                         let x = ant.x * _cellSize;
                         let y = ant.y * _cellSize;
                         ctx.beginPath();
-                        ctx.moveTo(x, y);
-                        ctx.drawImage(image, x, y, 20, 20);
+                        ctx.drawImage(image, i * _cellSize, j * _cellSize, 80, 80);
                     }
                 }
             }
         }
     }
 
-    createPath(row, col) {
-        this.grid[row][col] = new Cell(row, col);
-        let shuffledDirections = this.directions.sort(() => Math.random() - 0.5);
-
-        for (let [dx, dy] of shuffledDirections) {
-            let newRow = row + 2 * dx;
-            let newCol = col + 2 * dy;
-
-            if (newRow >= 1 && newRow < this.size - 1 && newCol >= 1 && newCol < this.size - 1) {
-                if (this.grid[newRow][newCol] instanceof Obstacle) {
-                    this.grid[row + dx][col + dy] = new Cell(row + dx, col + dy);
-                    this.createPath(newRow, newCol);
-                }
-            }
-        }
-    }
 
 }
 
