@@ -35,6 +35,11 @@
         import Grid from '../models/grid.js';
         import Agent from '../models/agent.js';
 
+        let _startTime = Date.now();
+        let _lag = 0;
+        let _fps = 60; // Frame rate.
+        let _frameDuration = 1000 / _fps;
+        let _timer = 0;
         let size = 15;
         let myGrid = new Grid(size);
         myGrid.drawGrid();
@@ -105,88 +110,30 @@
 
         const HEXTILES_IMAGE = new Image();
         HEXTILES_IMAGE.src = 'web/images/tiles/tree.png';
+        
 
-        Promise.all([
-            new Promise((resolve) => {
-                myGrid.grid[0][0].getTile().addEventListener('load', () => {
-                    resolve();
-                });
-            })
-        ])
-            .then(() => {
-                let ctx = canvas.getContext('2d');
-
-                for (let i = 0; i < _nbLines; i++) {
-                    for (let j = 0; j < _nbColumns; j++) {
-                        let tileIndex = myGrid.grid[i][j].tile;
-                        let sx = 0 * tileSize;
-                        let sy = 0;
-                        let sWidth = tileSize; // The width of the tile in the image
-                        let sHeight = tileSize; // The height of the tile in the image
-                        let dx = j * _cellSize; // The x-coordinate on the canvas where the tile should be drawn
-                        let dy = i * _cellSize; // The y-coordinate on the canvas where the tile should be drawn
-                        let dWidth = _cellSize; // The width of the tile on the canvas
-                        let dHeight = _cellSize; // The height of the tile on the canvas
-
-                        ctx.drawImage(myGrid.grid[i][j].getTile(), sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-                        if (myGrid.grid[i][j].getType().toString() == "Free") {
-                            let ants = myGrid.grid[i][j].ants
-                            for (let ant in ants) {
-                                let image = new Image();
-                                image.src = 'web/images/tiles/ant.png';
-                                image.id = "ant"
-                                image.addEventListener('load', () => {
-                                    ctx.drawImage(image, dx, dy, 20, 20);
-                                });
-
-                                setInterval(() => {
-                                    let canvas = document.getElementById('ant');
-                                    let ctx = canvas.getContext('2d');
-                                    ctx.moveTo(ant.x, ant.y);
-                                }, 1000);
-                            }
-                        }
-                    }
-                }
-            });
+        let Update = function () {
+            /* Calcul du deltaTime */
+            let currentTime = Date.now();
+            let deltaTime = currentTime - _startTime; // La durée entre deux appels (entre 2 frames).
+            _lag += deltaTime;
+            _startTime = currentTime;
+            _timer += deltaTime;
 
 
-        /*
-            Exercice 1:
-            -----------
-            A l'aide de la fonction ctx.drawImage (https://developer.mozilla.org/fr/docs/Web/API/CanvasRenderingContext2D/drawImage) afficher une grille d'images.
-            Les valeurs au sein de la grille déterminent l'image à afficher.
-            Utiliser pour cela:
+            /* Mettre à jour la logique si la variable _lag est supérieure ou égale à la durée d'une frame */
+            while (_lag >= _frameDuration) {
+                myGrid.moveAnts();
+                myGrid.displayAnts();
+                /* Réduire la variable _lag par la durée d'une frame */
+                _lag -= _frameDuration;
+            }
 
-            * la grille suivante:
+            requestAnimationFrame(Update); // La fonction de rappel est généralement appelée 60 fois par seconde.
 
-            let _grid = [
-                [0, 0, 0],
-                [0, 1, 0],
-                [0, 2, 0],
-                [0, 0, 0],
-            ];
+        }
+        Update();
 
-            * les trois premières tuiles de 32px (en ligne) issues de l'image TP_AntAlgorithm/tiles/foodAndColony.png.
-            * le code suivant pour charger le png et écrire votre programme.
-
-            ```
-            const HEXTILES_IMAGE = new Image();
-            HEXTILES_IMAGE.src = 'path/of/png';
-            Promise.all([
-                new Promise( (resolve) => {HEXTILES_IMAGE.addEventListener('load', () => { resolve();}); })
-            ])
-            .then(() => {
-                // Votre code ici.
-            });
-            ```
-
-            ########################################################
-
-            Exercice 2:
-            -----------
-            Effectuer ce même exercice à travers l'architecture MVC (https://github.com/PAJEAN/cours_javascript/tree/master/TP/MVC) en utilisant des fonctions callback entre les classes.
-        */
     </script>
 
 </body>

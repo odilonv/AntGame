@@ -32,6 +32,17 @@
     </div>
 
     <script>
+
+        let _startTime = Date.now();
+        let _lag = 0;
+        let _fps = 60; // Frame rate.
+        let _frameDuration = 1000 / _fps;
+        let _position = { x: 0, y: 0 };
+        let _speed = 1; // Nous voulons que 1 cellule (de notre grille) soit parcourue en 1 seconde (doit être dépendant des FPS fixés car la fonction est appelée à chaque frame). Notre unité de vitesse est donc "le nombre de cellules de la grille parcourues/seconde".
+        let _direction = 0; // En radian.
+        let _timer = 0;
+
+
         /* -- DECLARATION ET INITIALISATION DE PLUSIEURS VARIABLES (AVEC UNE PORTEE GLOBALE) -- */
 
         // = [
