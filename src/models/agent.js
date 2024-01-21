@@ -8,7 +8,6 @@ class Agent {
     moveRandomly() {
         const directions = ['up', 'down', 'left', 'right'];
         const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-        // if (this.direction == 'null') {
         switch (randomDirection) {
             case 'up':
                 this.direction = 'up';
@@ -23,7 +22,6 @@ class Agent {
                 this.direction = 'right';
                 break;
         }
-        // }
         return this.direction;
     }
 

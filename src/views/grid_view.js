@@ -1,7 +1,7 @@
 import Grid from '../models/grid.js';
 
 let size = 18;
-let myGrid = new Grid(size);
+let myGrid = Grid.getInstance(size);
 myGrid.drawGrid();
 
 let _nbLines = myGrid.grid.length;
@@ -12,8 +12,6 @@ let _cellSize = 40;
     let canvas = document.getElementById('my_canvas');
     canvas.width = _nbColumns * _cellSize;
     canvas.height = _nbLines * _cellSize;
-    let ctx = canvas.getContext('2d');
-
 })();
 
 let canvas = document.getElementById('my_canvas');
@@ -37,9 +35,7 @@ Promise.all(
                 addEventListenersToTiles(tiles, resolve);
             })
         )
-
     )
-
 )
     .then(() => {
         let ctx = canvas.getContext('2d');
@@ -59,7 +55,6 @@ Promise.all(
                 let dHeight = sHeight * scale;
 
                 addEventListenersToTiles(tiles, () => {
-                    console.log("position de l'image : " + dx + " " + dy + " ");
                     if (Array.isArray(tiles)) {
                         ctx.drawImage(tiles[0], sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
                         ctx.drawImage(tiles[1], sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
