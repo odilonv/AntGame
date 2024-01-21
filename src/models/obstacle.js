@@ -3,11 +3,15 @@ import Cell from './cell.js';
 class Obstacle extends Cell {
     constructor(x, y) {
         super(x, y);
-        this.tile.src = '/web/images/tiles/tree.png';
+        this.tile.src = 'web/images/tiles/tree.png';
+        this.tileIndex = 0;
     }
 
-    getTile() { return this.tile; }
-
+    getTile() {
+        let shadowTile = new Image();
+        shadowTile.src = 'web/images/tiles/shadow.png';
+        return [shadowTile, this.tile];
+    }
 }
 
 export default Obstacle;
