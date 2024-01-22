@@ -55,7 +55,8 @@ class Grid {
                     this.createPath(newRow, newCol);
                 } else if (this.grid[newRow][newCol] instanceof Cell) {
                     this.grid[row][col] = new Free(row + dx, col + dy);
-                    if (Math.random() < 0.05) {
+                    if (Math.random() < 0.1) {
+                        console.log("création d'une fourmie en " + row + " " + col);
                         let agent = new Agent(row, col);
                         this.grid[row][col].ants.push(agent);
                     }
@@ -66,7 +67,7 @@ class Grid {
 
     moveAnt(agent) {
         let _fps = 60; // Frame rate.
-        let size = 15;
+        let size = 18;
         let _speed = 1; // Nous voulons que 1 cellule (de notre grille) soit parcourue en 1 seconde (doit être dépendant des FPS fixés car la fonction est appelée à chaque frame). Notre unité de vitesse est donc "le nombre de cellules de la grille parcourues/seconde".
         let moveOK = false;
         let previousX = agent.x;
@@ -75,7 +76,7 @@ class Grid {
         let canvas = document.getElementById('my_canvas');
         let ctx = canvas.getContext('2d');
 
-        ctx.clearRect(previousX * _cellSize, previousY * _cellSize, 20, 20); // Efface le canvas.
+        // ctx.clearRect(previousY * _cellSize, previousX * _cellSize, 20, 20); // Efface le canvas.
 
         while (moveOK != true) {
             let whereIsNext;
@@ -86,27 +87,24 @@ class Grid {
             }
             let x = parseInt(agent.x);
             let y = parseInt(agent.y);
-            console.log(this.grid[x][y + 1].getType().toString());
-            console.log(this.grid[x][y - 1].getType().toString());
-            console.log(this.grid[x + 1][y].getType().toString());
-            console.log(this.grid[x - 1][y].getType().toString());
             if (whereIsNext === 'down' && y < size - 1) {
                 if (this.grid[x][y + 1].getType().toString() != "Obstacle") {
-                    // this.grid[x][y].ants.pop(agent);
-                    // this.grid[x][y + 1].ants.push(agent);
                     let _direction = 3 * (Math.PI / 2);
                     let dx = Math.cos(_direction); // cos(0) = 1 ; cos(pi) = -1 ; cos(pi/2) = 0.
                     let dy = Math.sin(_direction) * -1; // sin(0) = 0 ; sin(pi) = 0 ; sin(pi/2) = 1 ; -1 car canvas inverse l'axe Y.
                     /* Multiplier la direction par la vitesse */
+                    // console.log("on descend de "+ dy * _speed / _fps + "px");
                     agent.x += dx * _speed / _fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
                     agent.y += dy * _speed / _fps;
                     moveOK = true;
+                    // if (y > parseInt(agent.y)) {
+                    //     this.grid[x][y].ants.pop(agent);
+                    //     this.grid[x][y + 1].ants.push(agent);
+                    // }
                 }
             }
             else if (whereIsNext === 'up' && y > 0) {
                 if (this.grid[x][y - 1].getType().toString() != "Obstacle") {
-                    // this.grid[x][y].ants.pop(agent);
-                    // this.grid[x][y - 1].ants.push(agent);
                     let _direction = Math.PI / 2;
                     let dx = Math.cos(_direction); // cos(0) = 1 ; cos(pi) = -1 ; cos(pi/2) = 0.
                     let dy = Math.sin(_direction) * -1; // sin(0) = 0 ; sin(pi) = 0 ; sin(pi/2) = 1 ; -1 car canvas inverse l'axe Y.
@@ -114,12 +112,14 @@ class Grid {
                     agent.x += dx * _speed / _fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
                     agent.y += dy * _speed / _fps;
                     moveOK = true;
+                    // if (y < parseInt(agent.y)) {
+                    //     this.grid[x][y].ants.pop(agent);
+                    //     this.grid[x][y - 1].ants.push(agent);
+                    // }
                 }
             }
             else if (whereIsNext === 'right' && x < size - 1) {
                 if (this.grid[x + 1][y].getType().toString() != "Obstacle") {
-                    // this.grid[x][y].ants.pop(agent);
-                    // this.grid[x + 1][y].ants.push(agent);
                     let _direction = 0;
                     let dx = Math.cos(_direction); // cos(0) = 1 ; cos(pi) = -1 ; cos(pi/2) = 0.
                     let dy = Math.sin(_direction) * -1; // sin(0) = 0 ; sin(pi) = 0 ; sin(pi/2) = 1 ; -1 car canvas inverse l'axe Y.
@@ -127,19 +127,24 @@ class Grid {
                     agent.x += dx * _speed / _fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
                     agent.y += dy * _speed / _fps;
                     moveOK = true;
+                    // if (x < parseInt(agent.x)) {
+                    //     this.grid[x][y].ants.pop(agent);
+                    //     this.grid[x + 1][y].ants.push(agent);
+                    // }
                 }
             }
             else if (whereIsNext === 'left' && x > 0) {
                 if (this.grid[x - 1][y].getType().toString() != "Obstacle") {
-                    // this.grid[x][y].ants.pop(agent);
-                    // this.grid[x - 1][y].ants.push(agent);
                     let _direction = Math.PI;
                     let dx = Math.cos(_direction); // cos(0) = 1 ; cos(pi) = -1 ; cos(pi/2) = 0.
                     let dy = Math.sin(_direction) * -1; // sin(0) = 0 ; sin(pi) = 0 ; sin(pi/2) = 1 ; -1 car canvas inverse l'axe Y.
-                    /* Multiplier la direction par la vitesse */
                     agent.x += dx * _speed / _fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
                     agent.y += dy * _speed / _fps;
                     moveOK = true;
+                    // if (x > parseInt(agent.x)) {
+                    //     this.grid[x][y].ants.pop(agent);
+                    //     this.grid[x - 1][y].ants.push(agent);
+                    // }
                 }
             }
             if (moveOK == false) {
@@ -177,9 +182,14 @@ class Grid {
                     for (let ant of this.grid[i][j].ants) {
                         let x = ant.x * _cellSize;
                         let y = ant.y * _cellSize;
-                        // ctx.fillRect(i * _cellSize, j * _cellSize, _cellSize - padding, _cellSize - padding); // Dessine un carré plein.
-                        ctx.beginPath();
-                        ctx.drawImage(image, x, y, 20, 20);
+
+                        if (ant.direction == 'down') {
+                        } else if (ant.direction == 'up') {
+                        } else if (ant.direction == 'right') {
+                        } else if (ant.direction == 'left') {
+                        }
+                        
+                        ctx.drawImage(image, y + 20, x + 20, 20, 20);
                     }
                 }
             }
