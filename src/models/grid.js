@@ -1,4 +1,3 @@
-import Cell from './cell.js';
 import Obstacle from './obstacle.js';
 import Free from './free.js';
 import Agent from './agent.js';
@@ -43,7 +42,7 @@ class Grid {
     }
 
     createPath(row, col) {
-        this.grid[row][col] = new Cell(row, col);
+        this.grid[row][col] = new Free(row, col);
         let shuffledDirections = this.directions.sort(() => Math.random() - 0.5);
 
         for (let [dx, dy] of shuffledDirections) {
@@ -51,9 +50,9 @@ class Grid {
             let newCol = col + 2 * dy;
             if (newRow >= 1 && newRow < this.size - 1 && newCol >= 1 && newCol < this.size - 1) {
                 if (this.grid[newRow][newCol] instanceof Obstacle) {
-                    this.grid[row + dx][col + dy] = new Cell(row + dx, col + dy);
+                    this.grid[row + dx][col + dy] = new Free(row + dx, col + dy);
                     this.createPath(newRow, newCol);
-                } else if (this.grid[newRow][newCol] instanceof Cell) {
+                } else if (this.grid[newRow][newCol] instanceof Free) {
                     this.grid[row][col] = new Free(row + dx, col + dy);
                     if (Math.random() < 0.1) {
                         console.log("création d'une fourmie en " + row + " " + col);
@@ -145,7 +144,7 @@ class Grid {
         let movedAnts = new Set(); // Ajout d'un Set pour suivre les fourmis déplacées
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[0].length; j++) {
-                if (this.grid[i][j].getType().toString() == "Free") {
+                if (this.grid[i][j].getType() == "Free") {
                     for (let ant of this.grid[i][j].ants) {
                         if (!movedAnts.has(ant)) {
                             this.moveAnt(ant);
@@ -158,6 +157,7 @@ class Grid {
     }
 
     displayAnts() {
+        console.log(this.grid);
         let canvas = document.getElementById('my_canvas');
         let ctx = canvas.getContext('2d');
         let _cellSize = 40; // La taille d'une cellule en pixel.
@@ -166,7 +166,7 @@ class Grid {
         // image.onload = () => {
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[0].length; j++) {
-                if (this.grid[i][j].getType().toString() == "Free") {
+                if (this.grid[i][j].getType()== "Free") {
                     for (let ant of this.grid[i][j].ants) {
                         let x = ant.column * _cellSize;
                         let y = ant.row * _cellSize;
