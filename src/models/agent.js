@@ -1,27 +1,16 @@
 class Agent {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
+    constructor(row, column) {
+        this.row = row;
+        this.column = column;
         this.direction = 'null';
+        this.previousDirection = 'null';
     }
 
     moveRandomly() {
+        this.previousDirection = this.direction;
         const directions = ['up', 'down', 'left', 'right'];
         const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-        switch (randomDirection) {
-            case 'up':
-                this.direction = 'up';
-                break;
-            case 'down':
-                this.direction = 'down';
-                break;
-            case 'left':
-                this.direction = 'left';
-                break;
-            case 'right':
-                this.direction = 'right';
-                break;
-        }
+        this.direction = randomDirection;
         return this.direction;
     }
 
