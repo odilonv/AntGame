@@ -1,4 +1,3 @@
-import Cell from './cell.js';
 import Obstacle from './obstacle.js';
 import Free from './free.js';
 import Agent from './agent.js';
@@ -43,7 +42,7 @@ class Grid {
     }
 
     createPath(row, col) {
-        this.grid[row][col] = new Cell(row, col);
+        this.grid[row][col] = new Free(row, col);
         let shuffledDirections = this.directions.sort(() => Math.random() - 0.5);
 
         for (let [dx, dy] of shuffledDirections) {
@@ -51,9 +50,9 @@ class Grid {
             let newCol = col + 2 * dy;
             if (newRow >= 1 && newRow < this.size - 1 && newCol >= 1 && newCol < this.size - 1) {
                 if (this.grid[newRow][newCol] instanceof Obstacle) {
-                    this.grid[row + dx][col + dy] = new Cell(row + dx, col + dy);
+                    this.grid[row + dx][col + dy] = new Free(row + dx, col + dy);
                     this.createPath(newRow, newCol);
-                } else if (this.grid[newRow][newCol] instanceof Cell) {
+                } else if (this.grid[newRow][newCol] instanceof Free) {
                     this.grid[row][col] = new Free(row + dx, col + dy);
                     if (Math.random() < 0.05) {
                         let agent = new Agent(row, col);
@@ -86,12 +85,12 @@ class Grid {
             }
             let x = parseInt(agent.x);
             let y = parseInt(agent.y);
-            console.log(this.grid[x][y + 1].getType().toString());
-            console.log(this.grid[x][y - 1].getType().toString());
-            console.log(this.grid[x + 1][y].getType().toString());
-            console.log(this.grid[x - 1][y].getType().toString());
+            // console.log(this.grid[x][y + 1].getType().toString());
+            // console.log(this.grid[x][y - 1].getType().toString());
+            // console.log(this.grid[x + 1][y].getType().toString());
+            // console.log(this.grid[x - 1][y].getType().toString());
             if (whereIsNext === 'down' && y < size - 1) {
-                if (this.grid[x][y + 1].getType().toString() != "Obstacle") {
+                if (this.grid[x][y + 1].getType() != "Obstacle") {
                     // this.grid[x][y].ants.pop(agent);
                     // this.grid[x][y + 1].ants.push(agent);
                     let _direction = 3 * (Math.PI / 2);
@@ -104,7 +103,7 @@ class Grid {
                 }
             }
             else if (whereIsNext === 'up' && y > 0) {
-                if (this.grid[x][y - 1].getType().toString() != "Obstacle") {
+                if (this.grid[x][y - 1].getType() != "Obstacle") {
                     // this.grid[x][y].ants.pop(agent);
                     // this.grid[x][y - 1].ants.push(agent);
                     let _direction = Math.PI / 2;
@@ -117,7 +116,7 @@ class Grid {
                 }
             }
             else if (whereIsNext === 'right' && x < size - 1) {
-                if (this.grid[x + 1][y].getType().toString() != "Obstacle") {
+                if (this.grid[x + 1][y].getType() != "Obstacle") {
                     // this.grid[x][y].ants.pop(agent);
                     // this.grid[x + 1][y].ants.push(agent);
                     let _direction = 0;
@@ -130,7 +129,7 @@ class Grid {
                 }
             }
             else if (whereIsNext === 'left' && x > 0) {
-                if (this.grid[x - 1][y].getType().toString() != "Obstacle") {
+                if (this.grid[x - 1][y].getType() != "Obstacle") {
                     // this.grid[x][y].ants.pop(agent);
                     // this.grid[x - 1][y].ants.push(agent);
                     let _direction = Math.PI;
@@ -152,7 +151,7 @@ class Grid {
         let movedAnts = new Set(); // Ajout d'un Set pour suivre les fourmis déplacées
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[0].length; j++) {
-                if (this.grid[i][j].getType().toString() == "Free") {
+                if (this.grid[i][j].getType() == "Free") {
                     for (let ant of this.grid[i][j].ants) {
                         if (!movedAnts.has(ant)) {
                             this.moveAnt(ant);
@@ -165,6 +164,7 @@ class Grid {
     }
 
     displayAnts() {
+        console.log(this.grid);
         let canvas = document.getElementById('my_canvas');
         let ctx = canvas.getContext('2d');
         let _cellSize = 40; // La taille d'une cellule en pixel.
@@ -173,7 +173,7 @@ class Grid {
         // image.onload = () => {
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[0].length; j++) {
-                if (this.grid[i][j].getType().toString() == "Free") {
+                if (this.grid[i][j].getType()== "Free") {
                     for (let ant of this.grid[i][j].ants) {
                         let x = ant.x * _cellSize;
                         let y = ant.y * _cellSize;
