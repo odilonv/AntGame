@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { exec } = require('child_process');
 
 const getContentType = (filePath) => {
     const ext = path.extname(filePath);
@@ -39,4 +40,5 @@ const server = http.createServer((req, res) => {
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
+    exec(`start http://localhost:${port}`);
 });
