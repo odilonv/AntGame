@@ -1,5 +1,5 @@
-import Cell from './cell.js';
-class Start extends Cell {
+import Free from './free.js';
+class Start extends Free {
     constructor(x, y) {
         super(x, y);
     }
