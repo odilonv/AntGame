@@ -1,5 +1,7 @@
 import Obstacle from './obstacle.js';
 import Free from './free.js';
+import Start from './start.js';
+import Objective from './objective.js';
 import Agent from './agent.js';
 import Game from './game.js';
 
@@ -53,6 +55,30 @@ class Grid {
                 }
             }
         }
+
+        // // Après avoir créé le chemin, définissez une cellule de départ et deux cellules d'objectif à des positions aléatoires
+        // let startRow, startCol, objective1Row, objective1Col, objective2Row, objective2Col;
+
+        // do {
+        //     startRow = Math.floor(Math.random() * this.size);
+        //     startCol = Math.floor(Math.random() * this.size);
+        // } while (!(this.grid[startRow][startCol] instanceof Free));
+
+        // this.grid[startRow][startCol] = new Start(startRow, startCol);
+
+        // do {
+        //     objective1Row = Math.floor(Math.random() * this.size);
+        //     objective1Col = Math.floor(Math.random() * this.size);
+        // } while (!(this.grid[objective1Row][objective1Col] instanceof Free));
+
+        // this.grid[objective1Row][objective1Col] = new Objective(objective1Row, objective1Col);
+
+        // do {
+        //     objective2Row = Math.floor(Math.random() * this.size);
+        //     objective2Col = Math.floor(Math.random() * this.size);
+        // } while (!(this.grid[objective2Row][objective2Col] instanceof Free));
+
+        // this.grid[objective2Row][objective2Col] = new Objective(objective2Row, objective2Col);
     }
 
     moveAnt(agent) {
