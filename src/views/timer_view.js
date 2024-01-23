@@ -1,28 +1,15 @@
-import Game from '../models/game.js';
-
-let timer = Game.getInstance().timer;
-
-let startButton = document.getElementById('startAndStop');
-let timerDisplay = document.getElementById('timer');
-let intervalId = null;
-let hasStarted = false;
-
-startButton.addEventListener('click', () => {
-    if (timer.isRunning()) {
-        timer.stop();
-        startButton.textContent = hasStarted ? 'Restart' : 'Start';
-        clearInterval(intervalId);
-    } else {
-        timer.start();
-        startButton.textContent = 'Stop';
-        intervalId = setInterval(() => {
-            let elapsedTime = timer.getElapsedTime();
-            if (!isNaN(elapsedTime)) {
-                let minutes = Math.floor(elapsedTime / 60000);
-                let seconds = ((elapsedTime % 60000) / 1000).toFixed(0);
-                timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            }
-        }, 1000);
-        hasStarted = true;
+class TimerView {
+    constructor(timerDisplay) {
+        this.timerDisplay = timerDisplay;
     }
-});
+
+    update(minutes, seconds) {
+        this.timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    reset() {
+        this.timerDisplay.textContent = '0:00';
+    }
+}
+
+export default TimerView;
