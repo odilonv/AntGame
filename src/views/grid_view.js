@@ -57,6 +57,7 @@ Promise.all(
                         ctx.drawImage(tiles[0], sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
                         ctx.drawImage(tiles[1], sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
                     } else {
+                        // print a text on the cell
                         ctx.drawImage(tiles, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
                     }
                 });

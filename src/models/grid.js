@@ -1,7 +1,5 @@
 import Obstacle from './obstacle.js';
 import Free from './free.js';
-import Start from './start.js';
-import Objective from './objective.js';
 import Agent from './agent.js';
 import Game from './game.js';
 
@@ -34,10 +32,11 @@ class Grid {
         }
     }
 
+    static cellStartGenerated = false;
+
     createPath(row, col) {
         this.grid[row][col] = new Free(row, col);
         let shuffledDirections = this.directions.sort(() => Math.random() - 0.5);
-
         for (let [dx, dy] of shuffledDirections) {
             let newRow = row + 2 * dx;
             let newCol = col + 2 * dy;
@@ -47,38 +46,17 @@ class Grid {
                     this.createPath(newRow, newCol);
                 } else if (this.grid[newRow][newCol] instanceof Free) {
                     this.grid[row][col] = new Free(row + dx, col + dy);
-                    if (Math.random() < 0.05) {
-                        console.log("création d'une fourmie en " + row + " " + col);
-                        let agent = new Agent(row, col);
-                        this.grid[row][col].ants.push(agent);
+                    if (!Grid.cellStartGenerated) {
+                        for (let nbAnt = 0; nbAnt < 5; nbAnt++) {
+                            console.log("Génération de la fourmie en : " + row + " " + col);
+                            let agent = new Agent(row + dx, col + dy);
+                            Game.getInstance().ants.push(agent);
+                        }
+                        Grid.cellStartGenerated = true;
                     }
                 }
             }
         }
-
-        // // Après avoir créé le chemin, définissez une cellule de départ et deux cellules d'objectif à des positions aléatoires
-        // let startRow, startCol, objective1Row, objective1Col, objective2Row, objective2Col;
-
-        // do {
-        //     startRow = Math.floor(Math.random() * this.size);
-        //     startCol = Math.floor(Math.random() * this.size);
-        // } while (!(this.grid[startRow][startCol] instanceof Free));
-
-        // this.grid[startRow][startCol] = new Start(startRow, startCol);
-
-        // do {
-        //     objective1Row = Math.floor(Math.random() * this.size);
-        //     objective1Col = Math.floor(Math.random() * this.size);
-        // } while (!(this.grid[objective1Row][objective1Col] instanceof Free));
-
-        // this.grid[objective1Row][objective1Col] = new Objective(objective1Row, objective1Col);
-
-        // do {
-        //     objective2Row = Math.floor(Math.random() * this.size);
-        //     objective2Col = Math.floor(Math.random() * this.size);
-        // } while (!(this.grid[objective2Row][objective2Col] instanceof Free));
-
-        // this.grid[objective2Row][objective2Col] = new Objective(objective2Row, objective2Col);
     }
 
     moveAnt(agent) {
@@ -103,10 +81,6 @@ class Grid {
                     let dy = Math.sin(_direction) * -1;
                     agent.row += dy * Game._speed / Game._fps;
                     moveOK = true;
-                    if (parseInt(agent.row) > row) {
-                        // this.grid[x][y].ants.pop(agent);
-                        // this.grid[x][y + 1].ants.push(agent);
-                    }
                 }
             }
             else if (whereIsNext === 'up' && row > 0) { // en vrai on va vers la gauche jsp pk
@@ -115,10 +89,6 @@ class Grid {
                     let dy = Math.sin(_direction) * -1;
                     agent.row += dy * Game._speed / Game._fps;
                     moveOK = true;
-                    if (parseInt(agent.row) < row) {
-                        // this.grid[x][y].ants.pop(agent);
-                        // this.grid[x][y - 1].ants.push(agent);
-                    }
                 }
             }
             else if (whereIsNext === 'right' && column < Game.size - 1) { // en vrai on va vers le bas jsp pk
@@ -127,10 +97,6 @@ class Grid {
                     let dx = Math.cos(_direction);
                     agent.column += dx * Game._speed / Game._fps;
                     moveOK = true;
-                    if (parseInt(agent.column) > column) {
-                        // this.grid[x][y].ants.pop(agent);
-                        // this.grid[x + 1][y].ants.push(agent);
-                    }
                 }
             }
             else if (whereIsNext === 'left' && column > 0) { // en vrai on va vers le haut jsp pk
@@ -139,31 +105,21 @@ class Grid {
                     let dx = Math.cos(_direction);
                     agent.column += dx * Game._speed / Game._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
                     moveOK = true;
-                    if (parseInt(agent.column) < column) {
-                        // this.grid[x][y].ants.pop(agent);
-                        // this.grid[x - 1][y].ants.push(agent);
-                    }
                 }
             }
             if (moveOK == false) {
                 agent.direction = 'null';
+            } else {
+                agent.addToPathList(this.grid[column][row]);
             }
         }
     }
 
     moveAnts() {
         let movedAnts = new Set(); // Ajout d'un Set pour suivre les fourmis déplacées
-        for (let i = 0; i < this.grid.length; i++) {
-            for (let j = 0; j < this.grid[0].length; j++) {
-                if (this.grid[i][j].getType() == "Free") {
-                    for (let ant of this.grid[i][j].ants) {
-                        if (!movedAnts.has(ant)) {
-                            this.moveAnt(ant);
-                            movedAnts.add(ant);
-                        }
-                    }
-                }
-            }
+        for (let ant of Game.getInstance().ants) {
+            this.moveAnt(ant);
+            movedAnts.add(ant);
         }
     }
 
@@ -174,20 +130,25 @@ class Grid {
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[0].length; j++) {
                 if (this.grid[i][j].getType() == "Free") {
-                    for (let ant of this.grid[i][j].ants) {
-                        let x = ant.column * Game._cellSize;
-                        let y = ant.row * Game._cellSize;
-
-                        Game.ctx.save();
-                        Game.ctx.translate(y + 30, x + 30);
-                        Game.ctx.rotate((ant.direction == 'up' ? 0 : ant.direction == 'right' ? Math.PI / 2 : ant.direction == 'down' ? Math.PI : 3 * Math.PI / 2));
-                        Game.ctx.drawImage(image, -10, -10, 20, 20);
-                        Game.ctx.restore();
-                    }
+                    let ctx = Game.ctx;
+                    ctx.font = "10px Arial";
+                    ctx.fillStyle = "white";
+                    ctx.fillText(this.grid[i][j]._qty, j * Game._cellSize + 30, i * Game._cellSize + 30);
                 }
             }
             // }
-        };
+
+        }
+        for (let ant of Game.getInstance().ants) {
+            let x = ant.column * Game._cellSize;
+            let y = ant.row * Game._cellSize;
+
+            Game.ctx.save();
+            Game.ctx.translate(y + 30, x + 30);
+            Game.ctx.rotate((ant.direction == 'up' ? 0 : ant.direction == 'right' ? Math.PI / 2 : ant.direction == 'down' ? Math.PI : 3 * Math.PI / 2));
+            Game.ctx.drawImage(image, -10, -10, 20, 20);
+            Game.ctx.restore();
+        }
     }
 }
 

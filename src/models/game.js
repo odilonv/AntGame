@@ -17,6 +17,7 @@ class Game {
     constructor() {
         this.grid = new Grid(18);
         this.timer = new Timer();
+        this.ants = [];
     }
 
     static getInstance() {

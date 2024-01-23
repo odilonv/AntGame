@@ -4,6 +4,7 @@ class Agent {
         this.column = column;
         this.direction = 'null';
         this.previousDirection = 'null';
+        this.listOfPaths = []; // Liste des chemins parcourus par la fourmi.
     }
 
     moveRandomly() {
@@ -24,6 +25,13 @@ class Agent {
         // /* Multiplier la direction par la vitesse */
         // this.x += dx * _speed / _fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
         // this.y += dy * _speed / _fps;
+    }
+
+    addToPathList(cell) {
+        // console.log(this.listOfPaths);
+        //check list of paths don't contain cell
+        if (!this.listOfPaths.includes(cell))
+            this.listOfPaths.push(cell);
     }
 }
 
