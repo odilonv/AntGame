@@ -51,7 +51,7 @@ class Grid {
                     if (!Grid.cellStartGenerated) {
                         this.cellStart = new Start(col, row);
                         this.grid[row][col] = this.cellStart;
-                        for (let nbAnt = 0; nbAnt < 1; nbAnt++) {
+                        for (let nbAnt = 0; nbAnt < Game.nbAnts; nbAnt++) {
                             Game.getInstance().ants.push(new Agent(row + dx, col + dy));
                         }
                         Grid.cellStartGenerated = true;
