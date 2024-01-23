@@ -1,36 +1,37 @@
 class Timer {
     constructor() {
-        this.startTime = null;
-        this.endTime = null;
-        this.running = false;
+        this.elapsedTime = 0;
+        this.intervalId = null;
+        this.isPaused = false;
     }
 
     start() {
-        this.startTime = new Date();
-        this.running = true;
+        if (this.intervalId === null) {
+            this.intervalId = setInterval(() => {
+                if (!this.isPaused) {
+                    this.elapsedTime += 1000;
+                }
+            }, 1000);
+        }
+    }
+
+    pause() {
+        this.isPaused = true;
+    }
+
+    resume() {
+        this.isPaused = false;
     }
 
     stop() {
-        this.endTime = new Date();
-        this.running = false;
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+        this.isPaused = false;
+        this.elapsedTime = 0;
     }
 
     getElapsedTime() {
-        if (!this.startTime) {
-            throw new Error('Timer has not been started.');
-        }
-
-        let endTime = this.endTime;
-
-        if (this.running) {
-            endTime = new Date();
-        }
-
-        return endTime - this.startTime;
-    }
-
-    isRunning() {
-        return this.running;
+        return this.elapsedTime;
     }
 }
 
