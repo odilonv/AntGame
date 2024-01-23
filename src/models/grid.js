@@ -137,7 +137,7 @@ class Grid {
                     ctx.fillStyle = "white";
                     let value = this.grid[i][j]._qty;
                     ctx.fillText(value.toString(), j * Game._cellSize + 30, i * Game._cellSize + 30);
-                }
+                } 
             }
             // }
         }
