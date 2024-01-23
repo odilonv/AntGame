@@ -3,12 +3,11 @@ class Agent {
         this.row = row;
         this.column = column;
         this.direction = 'null';
-        this.previousDirection = 'null';
         this.listOfPaths = []; // Liste des chemins parcourus par la fourmi.
+        this.hasTookADecision = false;
     }
 
     moveRandomly() {
-        this.previousDirection = this.direction;
         const directions = ['up', 'down', 'left', 'right'];
         const randomDirection = directions[Math.floor(Math.random() * directions.length)];
         this.direction = randomDirection;
@@ -28,10 +27,13 @@ class Agent {
     }
 
     addToPathList(cell) {
-        // console.log(this.listOfPaths);
+        // console.log(²this.listOfPaths);
         //check list of paths don't contain cell
-        if (!this.listOfPaths.includes(cell))
+        if (!this.listOfPaths.includes(cell)) {
             this.listOfPaths.push(cell);
+        }
+        this.hasTookADecision = false;
+
     }
 }
 
