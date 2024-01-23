@@ -72,49 +72,56 @@ class Grid {
 
         while (moveOK != true) {
             let whereIsNext;
+            let movesPossible = this.movePossibles(agent);
             if (agent.direction == 'null') {
                 whereIsNext = agent.moveRandomly();
-            } else {
+            }
+            else {
                 whereIsNext = agent.direction;
             }
             let column = parseInt(agent.column);
             let row = parseInt(agent.row);
-            if (this.grid[column][row].getType().toString() == "Start") {
-                console.log(agent.listOfPaths);
-                for (const cell of agent.listOfPaths) {
+            if (this.grid[column][row].getType().toString() == "Start")
+                for (const cell of agent.listOfPaths)
                     cell._qty = (1 / agent.listOfPaths.length).toFixed(2);
-                }
-            }
-            if (whereIsNext === 'down' && row < Game.size - 1) { // en vrai on va vers la droite jsp pk
-                if (this.grid[column][row + 1].getType().toString() != "Obstacle") {
-                    agent.row += Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps;
-                    moveOK = true;
-                }
-            }
-            else if (whereIsNext === 'up' && row > 0) { // en vrai on va vers la gauche jsp pk
-                if (this.grid[column][row - 1].getType().toString() != "Obstacle" || agent.row > parseInt(agent.row) + 0.3) { // la case du dessus est libre ou la fourmi est sur le bord de la grille
-                    agent.row += Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps;
-                    moveOK = true;
-                }
-            }
-            else if (whereIsNext === 'right' && column < Game.size - 1) { // en vrai on va vers le bas jsp pk
-                if (this.grid[column + 1][row].getType().toString() != "Obstacle") {
-                    agent.column += Math.cos(0) * Game._speed / Game._fps;
-                    moveOK = true;
-                }
-            }
-            else if (whereIsNext === 'left' && column > 0) { // en vrai on va vers le haut jsp pk
-                if (this.grid[column - 1][row].getType().toString() != "Obstacle" || agent.column > parseInt(agent.column) + 0.3) {
-                    agent.column += Math.cos(Math.PI) * Game._speed / Game._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
-                    moveOK = true;
-                }
-            }
+
+            if (whereIsNext === 'down' && movesPossible.includes('down')) {
+                agent.row += Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps;
+                moveOK = true;
+            }   // en vrai on va vers la droite jsp pk
+            else if (whereIsNext === 'up' && movesPossible.includes('up') || agent.row > parseInt(agent.row) + 0.3) {
+                agent.row += Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps;
+                moveOK = true;
+            }   // en vrai on va vers la gauche jsp pk
+            else if (whereIsNext === 'right' && movesPossible.includes('right')) {
+                agent.column += Math.cos(0) * Game._speed / Game._fps;
+                moveOK = true;
+            }   // en vrai on va vers le bas jsp pk
+            else if (whereIsNext === 'left' && movesPossible.includes('left') || agent.column > parseInt(agent.column) + 0.3) {
+                agent.column += Math.cos(Math.PI) * Game._speed / Game._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
+                moveOK = true;
+            }   // en vrai on va vers le haut jsp pk
             if (moveOK == false) {
                 agent.direction = 'null';
             } else {
                 agent.addToPathList(this.grid[column][row]);
             }
         }
+    }
+
+    movePossibles(agent) {
+        let movePossibles = [];
+        let column = parseInt(agent.column);
+        let row = parseInt(agent.row);
+        if (column < Game.size - 1 && this.grid[column + 1][row].getType() != "Obstacle")
+            movePossibles.push('right');
+        if (column > 0 && this.grid[column - 1][row].getType() != "Obstacle")
+            movePossibles.push('left');
+        if (row < Game.size - 1 && this.grid[column][row + 1].getType() != "Obstacle")
+            movePossibles.push('down');
+        if (row > 0 && this.grid[column][row - 1].getType() != "Obstacle")
+            movePossibles.push('up');
+        return movePossibles;
     }
 
     moveAnts() {
@@ -137,7 +144,7 @@ class Grid {
                     ctx.fillStyle = "white";
                     let value = this.grid[i][j]._qty;
                     ctx.fillText(value.toString(), j * Game._cellSize + 30, i * Game._cellSize + 30);
-                } 
+                }
             }
             // }
         }
