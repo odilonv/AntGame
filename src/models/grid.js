@@ -1,31 +1,15 @@
 import Obstacle from './obstacle.js';
 import Free from './free.js';
 import Agent from './agent.js';
+import Game from './game.js';
 
 class Grid {
-
-    static instance = null;
-    static _fps = 60; // Frame rate.
-    static size = 18;
-    static _speed = 1; // Nous voulons que 1 cellule (de notre grille) soit parcourue en 1 seconde (doit être dépendant des FPS fixés car la fonction est appelée à chaque frame). Notre unité de vitesse est donc "le nombre de cellules de la grille parcourues/seconde".
-    static _cellSize = 40; // La taille d'une cellule en pixel.
-    static canvas = document.getElementById('my_canvas');
-    static ctx = Grid.canvas.getContext('2d');
 
     constructor(size) {
         this.size = size;
         this.grid = [];
         this.directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-
     }
-
-    static getInstance(size) {
-        if (!Grid.instance) {
-            Grid.instance = new Grid(size);
-        }
-        return Grid.instance;
-    }
-
 
     drawGrid() {
         for (let i = 0; i < this.size; i++) {
@@ -61,7 +45,7 @@ class Grid {
                     this.createPath(newRow, newCol);
                 } else if (this.grid[newRow][newCol] instanceof Free) {
                     this.grid[row][col] = new Free(row + dx, col + dy);
-                    if (Math.random() < 0.1) {
+                    if (Math.random() < 0.05) {
                         console.log("création d'une fourmie en " + row + " " + col);
                         let agent = new Agent(row, col);
                         this.grid[row][col].ants.push(agent);
@@ -76,7 +60,7 @@ class Grid {
         let previousX = agent.column;
         let previousY = agent.row;
 
-        Grid.ctx.clearRect(previousY * Grid._cellSize + 20, previousX * Grid._cellSize + 20, 20, 20); // Efface le canvas.
+        Game.ctx.clearRect(previousY * Game._cellSize + 20, previousX * Game._cellSize + 20, 20, 20); // Efface le canvas.
 
         while (moveOK != true) {
             let whereIsNext;
@@ -87,11 +71,11 @@ class Grid {
             }
             let column = parseInt(agent.column);
             let row = parseInt(agent.row);
-            if (whereIsNext === 'down' && row < Grid.size - 1) { // en vrai on va vers la droite jsp pk
+            if (whereIsNext === 'down' && row < Game.size - 1) { // en vrai on va vers la droite jsp pk
                 if (this.grid[column][row + 1].getType().toString() != "Obstacle") {
                     let _direction = 3 * (Math.PI / 2);
                     let dy = Math.sin(_direction) * -1;
-                    agent.row += dy * Grid._speed / Grid._fps;
+                    agent.row += dy * Game._speed / Game._fps;
                     moveOK = true;
                     if (parseInt(agent.row) > row) {
                         // this.grid[x][y].ants.pop(agent);
@@ -103,7 +87,7 @@ class Grid {
                 if (this.grid[column][row - 1].getType().toString() != "Obstacle" || agent.row > parseInt(agent.row) + 0.3) { // la case du dessus est libre ou la fourmi est sur le bord de la grille
                     let _direction = Math.PI / 2;
                     let dy = Math.sin(_direction) * -1;
-                    agent.row += dy * Grid._speed / Grid._fps;
+                    agent.row += dy * Game._speed / Game._fps;
                     moveOK = true;
                     if (parseInt(agent.row) < row) {
                         // this.grid[x][y].ants.pop(agent);
@@ -111,11 +95,11 @@ class Grid {
                     }
                 }
             }
-            else if (whereIsNext === 'right' && column < Grid.size - 1) { // en vrai on va vers le bas jsp pk
+            else if (whereIsNext === 'right' && column < Game.size - 1) { // en vrai on va vers le bas jsp pk
                 if (this.grid[column + 1][row].getType().toString() != "Obstacle") {
                     let _direction = 0;
                     let dx = Math.cos(_direction);
-                    agent.column += dx * Grid._speed / Grid._fps;
+                    agent.column += dx * Game._speed / Game._fps;
                     moveOK = true;
                     if (parseInt(agent.column) > column) {
                         // this.grid[x][y].ants.pop(agent);
@@ -127,7 +111,7 @@ class Grid {
                 if (this.grid[column - 1][row].getType().toString() != "Obstacle" || agent.column > parseInt(agent.column) + 0.3) {
                     let _direction = Math.PI;
                     let dx = Math.cos(_direction);
-                    agent.column += dx * Grid._speed / Grid._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
+                    agent.column += dx * Game._speed / Game._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
                     moveOK = true;
                     if (parseInt(agent.column) < column) {
                         // this.grid[x][y].ants.pop(agent);
@@ -158,7 +142,6 @@ class Grid {
     }
 
     displayAnts() {
-        console.log(this.grid);
         let image = new Image();
         image.src = 'web/images/tiles/ant.png';
         // image.onload = () => {
@@ -166,14 +149,14 @@ class Grid {
             for (let j = 0; j < this.grid[0].length; j++) {
                 if (this.grid[i][j].getType() == "Free") {
                     for (let ant of this.grid[i][j].ants) {
-                        let x = ant.column * Grid._cellSize;
-                        let y = ant.row * Grid._cellSize;
+                        let x = ant.column * Game._cellSize;
+                        let y = ant.row * Game._cellSize;
 
-                        Grid.ctx.save();
-                        Grid.ctx.translate(y + 30, x + 30);
-                        Grid.ctx.rotate((ant.direction == 'up' ? 0 : ant.direction == 'right' ? Math.PI / 2 : ant.direction == 'down' ? Math.PI : 3 * Math.PI / 2));
-                        Grid.ctx.drawImage(image, -10, -10, 20, 20);
-                        Grid.ctx.restore();
+                        Game.ctx.save();
+                        Game.ctx.translate(y + 30, x + 30);
+                        Game.ctx.rotate((ant.direction == 'up' ? 0 : ant.direction == 'right' ? Math.PI / 2 : ant.direction == 'down' ? Math.PI : 3 * Math.PI / 2));
+                        Game.ctx.drawImage(image, -10, -10, 20, 20);
+                        Game.ctx.restore();
                     }
                 }
             }

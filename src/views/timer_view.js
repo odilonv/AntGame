@@ -1,10 +1,11 @@
-import Timer from '../models/timer.js';
+import Game from '../models/game.js';
+
+let timer = Game.getInstance().timer;
 
 let startButton = document.getElementById('startAndStop');
 let timerDisplay = document.getElementById('timer');
-let timer = new Timer();
 let intervalId = null;
-let hasStarted = false; 
+let hasStarted = false;
 
 startButton.addEventListener('click', () => {
     if (timer.isRunning()) {
@@ -22,6 +23,6 @@ startButton.addEventListener('click', () => {
                 timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             }
         }, 1000);
-        hasStarted = true; 
+        hasStarted = true;
     }
 });
