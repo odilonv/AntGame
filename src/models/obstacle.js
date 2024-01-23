@@ -4,7 +4,8 @@ class Obstacle extends Cell {
     constructor(x, y) {
         super(x, y);
         this.tile.src = 'web/images/tiles/tree.png';
-        this.tileIndex = 0;
+        this.tileIndex = [0, 0];
+        this.tileSize = 150;
     }
 
     getTile() {

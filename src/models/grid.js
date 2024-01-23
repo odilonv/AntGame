@@ -69,6 +69,7 @@ class Grid {
         let previousY = agent.row;
 
         Game.ctx.clearRect(previousY * Game._cellSize + 20, previousX * Game._cellSize + 20, 20, 20); // Efface le canvas.
+        
 
         while (moveOK != true) {
             let whereIsNext;

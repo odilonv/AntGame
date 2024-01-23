@@ -8,8 +8,7 @@ class Game {
     static _frameDuration = 1000 / Game._fps;
     static _lag = 0;
     static size = 18;
-    static nbAnts = 5;
-    static tileSize = 150;
+    static nbAnts = 3;
     static _speed = 2; // Nous voulons que 1 cellule (de notre grille) soit parcourue en 1 seconde (doit être dépendant des FPS fixés car la fonction est appelée à chaque frame). Notre unité de vitesse est donc "le nombre de cellules de la grille parcourues/seconde".
     static _cellSize = 40; // La taille d'une cellule en pixel.
     static canvas = document.getElementById('my_canvas');
