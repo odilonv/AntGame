@@ -3,6 +3,7 @@ import Free from './free.js';
 import Agent from './agent.js';
 import Game from './game.js';
 import Start from './start.js';
+import Objective from './objective.js';
 
 class Grid {
 
@@ -36,6 +37,7 @@ class Grid {
     }
 
     static cellStartGenerated = false;
+    static objectiveCellsCpt = 0;
 
     createPath(row, col) {
         this.grid[row][col] = new Free(row, col);
@@ -55,8 +57,13 @@ class Grid {
                             Game.getInstance().ants.push(new Agent(row + dx, col + dy));
                         }
                         Grid.cellStartGenerated = true;
-                    } else
+                    } else if (Grid.objectiveCellsCpt <= 3) {
+                        this.grid[row][col] = new Objective(row, col);
+                        Grid.objectiveCellsCpt++;
+                    }
+                    else {
                         this.grid[row][col] = new Free(row, col);
+                    }
                 }
             }
         }
