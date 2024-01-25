@@ -73,12 +73,18 @@ class Grid {
 
         if (this.isAtTheCenterOfTheCell(agent) || agent.direction == "null") {
             agent.direction = this.takeDirection(agent);
+            console.log(agent.direction);
         }
 
-        if (this.grid[column][row].getType().toString() == "Start")
+        if (this.grid[column][row].getType().toString() == "Start") {
             for (const cell of agent.listOfPaths) {
-                cell._qty = (1 / agent.listOfPaths.length).toFixed(2);
+                cell._qty += (1 / agent.listOfPaths.length);
+                console.log(cell._qty);
             }
+            agent.listOfPaths = [];
+            agent.objective = null;
+            console.log("revenu au point de départ");
+        }
 
         if (agent.direction === 'down') {
             agent.row += Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps;
@@ -100,23 +106,31 @@ class Grid {
         let column = parseInt(agent.column);
         let row = parseInt(agent.row);
         let movePossibles = this.movePossibles(agent);
-        for (const movePossible of movePossibles) {
-            if (movePossible == "up" && !agent.listOfPaths.includes(this.grid[column][row - 1])) {
-                return movePossible;
-            }
-            else if (movePossible == "down" && !agent.listOfPaths.includes(this.grid[column][row + 1])) {
-                return movePossible;
-            }
-            else if (movePossible == "left" && !agent.listOfPaths.includes(this.grid[column - 1][row])) {
-                console.log("la case de haut est libre !");
-                return movePossible;
-            }
-            else if (movePossible == "right" && !agent.listOfPaths.includes(this.grid[column + 1][row])) {
-                return movePossible;
-            }
+        if (movePossibles.length == 1) {
+            return movePossibles[0];
+        }
+        console.log(movePossibles);
+        if (movePossibles.includes("up") && !agent.listOfPaths.includes(this.grid[column][row - 1])) {
+            return "up";
+        }
+        else if (movePossibles.includes("down") && !agent.listOfPaths.includes(this.grid[column][row + 1])) {
+            return "down";
+        }
+        else if (movePossibles.includes("left") && !agent.listOfPaths.includes(this.grid[column - 1][row])) {
+            return "left";
+        }
+        else if (movePossibles.includes("right") && !agent.listOfPaths.includes(this.grid[column + 1][row])) {
+            return "right";
+        }
+
+        if (agent.objective != null && movePossibles.includes(agent.getDirectionFromObjective())) {
+            console.log("test");
+            agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
+            return agent.getDirectionFromObjective();
         }
         if (!movePossibles.includes(agent.direction)) {
-            return movePossibles[0];
+            agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
+            return this.takeDirection(agent);
         }
         return agent.direction;
     }
@@ -169,7 +183,13 @@ class Grid {
                     ctx.font = "10px Arial";
                     ctx.fillStyle = "white";
                     let value = this.grid[i][j]._qty;
-                    ctx.fillText(value.toString(), j * Game._cellSize + 30, i * Game._cellSize + 30);
+                    ctx.clearRect(j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 20); // Efface le canvas.
+                    ctx.drawImage(this.grid[i][j].getTile(), this.grid[i][j].tileIndex[0], this.grid[i][j].tileIndex[1], this.grid[i][j].tileSize, this.grid[i][j].tileSize, j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 30);
+                    ctx.fillText(value.toFixed(2), j * Game._cellSize + 23, i * Game._cellSize + 40);
+                } else if (this.grid[i][j].getType() == "Start") {
+                    let ctx = Game.ctx;
+                    ctx.clearRect(j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 20); // Efface le canvas.
+                    ctx.drawImage(this.grid[i][j].getTile(), this.grid[i][j].tileIndex[0], this.grid[i][j].tileIndex[1], this.grid[i][j].tileSize, this.grid[i][j].tileSize, j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 30);
                 }
             }
             // }

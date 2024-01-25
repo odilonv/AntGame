@@ -4,7 +4,7 @@ class Agent {
         this.column = column;
         this.direction = 'null';
         this.listOfPaths = []; // Liste des chemins parcourus par la fourmi.
-        this.hasTookADecision = false;
+        this.objective = null; // Indice de listOfPaths qui correspond à la cellule objectif.
     }
 
     moveRandomly() {
@@ -32,8 +32,33 @@ class Agent {
         if (!this.listOfPaths.includes(cell)) {
             this.listOfPaths.push(cell);
         }
-        this.hasTookADecision = false;
+    }
 
+    getDirectionFromObjective() {
+        console.log(this.objective);
+        console.log(this.listOfPaths);
+        console.log(this);
+        if (this.objective.x == parseInt(this.column)) {
+            if (this.objective.y > this.row) {
+                console.log("down");
+                return "down";
+            }
+            else if (this.objective.y < this.row) {
+                console.log("up");
+                return "up";
+            }
+         }
+        else if (this.objective.y == parseInt(this.row)) {
+            if (this.objective.x > this.column) {
+                console.log("right");
+                return "right";
+            }
+            else if (this.objective.x < this.column) {
+                console.log("left");
+                return "left";
+            }
+        }
+        return this.direction;
     }
 }
 
