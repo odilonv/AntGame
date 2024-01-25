@@ -1,3 +1,5 @@
+import Game from './game.js';
+
 class Agent {
     constructor(row, column) {
         this.row = row;
@@ -35,30 +37,36 @@ class Agent {
     }
 
     getDirectionFromObjective() {
-        console.log(this.objective);
-        console.log(this.listOfPaths);
-        console.log(this);
         if (this.objective.x == parseInt(this.column)) {
             if (this.objective.y > this.row) {
-                console.log("down");
                 return "down";
             }
             else if (this.objective.y < this.row) {
-                console.log("up");
                 return "up";
             }
-         }
+        }
         else if (this.objective.y == parseInt(this.row)) {
             if (this.objective.x > this.column) {
-                console.log("right");
                 return "right";
             }
             else if (this.objective.x < this.column) {
-                console.log("left");
                 return "left";
             }
         }
         return this.direction;
+    }
+
+    isAtTheCenterOfTheCell() {
+        if (this.direction == "up" && this.row - parseInt(this.row) > 0.1 && this.row - parseInt(this.row) + Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps < 0.1) {
+            return true;
+        } else if (this.direction == "down" && this.row - parseInt(this.row) < 0.1 && this.row - parseInt(this.row) + Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps > 0.1) {
+            return true
+        } else if (this.direction == "left" && this.column - parseInt(this.column) > 0.1 && this.column - parseInt(this.column) + Math.cos(Math.PI) * Game._speed / Game._fps < 0.1) {
+            return true
+        } else if (this.direction == "right" && this.column - parseInt(this.column) < 0.1 && this.column - parseInt(this.column) + Math.cos(0) * Game._speed / Game._fps > 0.1) {
+            return true
+        }
+        return false;
     }
 }
 

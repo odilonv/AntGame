@@ -71,19 +71,16 @@ class Grid {
         let column = parseInt(agent.column);
         let row = parseInt(agent.row);
 
-        if (this.isAtTheCenterOfTheCell(agent) || agent.direction == "null") {
+        if (agent.isAtTheCenterOfTheCell() || agent.direction == "null") {
             agent.direction = this.takeDirection(agent);
-            console.log(agent.direction);
         }
 
         if (this.grid[column][row].getType().toString() == "Start") {
             for (const cell of agent.listOfPaths) {
                 cell._qty += (1 / agent.listOfPaths.length);
-                console.log(cell._qty);
             }
             agent.listOfPaths = [];
             agent.objective = null;
-            console.log("revenu au point de départ");
         }
 
         if (agent.direction === 'down') {
@@ -106,25 +103,28 @@ class Grid {
         let column = parseInt(agent.column);
         let row = parseInt(agent.row);
         let movePossibles = this.movePossibles(agent);
+        let movePossiblesNotInPath = [];
         if (movePossibles.length == 1) {
             return movePossibles[0];
         }
-        console.log(movePossibles);
         if (movePossibles.includes("up") && !agent.listOfPaths.includes(this.grid[column][row - 1])) {
-            return "up";
+            movePossiblesNotInPath.push("up");
         }
-        else if (movePossibles.includes("down") && !agent.listOfPaths.includes(this.grid[column][row + 1])) {
-            return "down";
+        if (movePossibles.includes("down") && !agent.listOfPaths.includes(this.grid[column][row + 1])) {
+            movePossiblesNotInPath.push("down");
         }
-        else if (movePossibles.includes("left") && !agent.listOfPaths.includes(this.grid[column - 1][row])) {
-            return "left";
+        if (movePossibles.includes("left") && !agent.listOfPaths.includes(this.grid[column - 1][row])) {
+            movePossiblesNotInPath.push("left");
         }
-        else if (movePossibles.includes("right") && !agent.listOfPaths.includes(this.grid[column + 1][row])) {
-            return "right";
+        if (movePossibles.includes("right") && !agent.listOfPaths.includes(this.grid[column + 1][row])) {
+            movePossiblesNotInPath.push("right");
+        }
+
+        if (movePossiblesNotInPath.length > 0) {
+            return movePossiblesNotInPath[Math.floor(Math.random() * movePossiblesNotInPath.length)];
         }
 
         if (agent.objective != null && movePossibles.includes(agent.getDirectionFromObjective())) {
-            console.log("test");
             agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
             return agent.getDirectionFromObjective();
         }
@@ -135,18 +135,7 @@ class Grid {
         return agent.direction;
     }
 
-    isAtTheCenterOfTheCell(agent) {
-        if ((agent.direction == "up" && agent.row - parseInt(agent.row) > 0.1 && agent.row - parseInt(agent.row) + Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps < 0.1)) {
-            return true;
-        } else if (agent.direction == "down" && agent.row - parseInt(agent.row) < 0.1 && agent.row - parseInt(agent.row) + Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps > 0.1) {
-            return true
-        } else if (agent.direction == "left" && agent.column - parseInt(agent.column) > 0.1 && agent.column - parseInt(agent.column) + Math.cos(Math.PI) * Game._speed / Game._fps < 0.1) {
-            return true
-        } else if (agent.direction == "right" && agent.column - parseInt(agent.column) < 0.1 && agent.column - parseInt(agent.column) + Math.cos(0) * Game._speed / Game._fps > 0.1) {
-            return true
-        }
-        return false;
-    }
+
 
 
     movePossibles(agent) {
@@ -180,11 +169,27 @@ class Grid {
             for (let j = 0; j < this.grid[0].length; j++) {
                 if (this.grid[i][j].getType() == "Free") {
                     let ctx = Game.ctx;
-                    ctx.font = "10px Arial";
-                    ctx.fillStyle = "white";
+
                     let value = this.grid[i][j]._qty;
+                    ctx.font = "10px Arial";
+
+                    // couleur blanche pour 0, d0c087 jusqu'à 0.02, 94ae8f jusqu'à 0.04,  79bc79 jusqu'à 0.06, b98d0d > 0.6 
+                    if (value == 0)
+                        ctx.fillStyle = "#ffffff";
+                    else if (value < 0.02)
+                        ctx.fillStyle = "#d0c087";
+                    else if (value < 0.04)
+                        ctx.fillStyle = "#94ae8f";
+                    else if (value < 0.06)
+                        ctx.fillStyle = "#79bc79";
+                    else
+                        ctx.fillStyle = "#b98d0d";
+
+
                     ctx.clearRect(j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 20); // Efface le canvas.
+
                     ctx.drawImage(this.grid[i][j].getTile(), this.grid[i][j].tileIndex[0], this.grid[i][j].tileIndex[1], this.grid[i][j].tileSize, this.grid[i][j].tileSize, j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 30);
+
                     ctx.fillText(value.toFixed(2), j * Game._cellSize + 23, i * Game._cellSize + 40);
                 } else if (this.grid[i][j].getType() == "Start") {
                     let ctx = Game.ctx;
