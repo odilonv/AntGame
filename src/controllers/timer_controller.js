@@ -1,7 +1,6 @@
 class TimerController {
     constructor(timerModel, timerView) {
         this.timerModel = timerModel;
-        //this.timerView = new TimerView(timerDisplay);
         this.timerView = timerView;
 
         this.bindDisplayTimer = this.bindDisplayTimer.bind(this);
