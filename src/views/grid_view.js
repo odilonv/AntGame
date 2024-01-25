@@ -54,6 +54,3 @@ for (let i = 0; i < _nbLines; i++) {
         });
     }
 }
-
-
-export default GridView;
