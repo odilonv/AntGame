@@ -19,7 +19,7 @@ body {
     border-radius: 20px;
 }
 
-.sidebar {
+#sidebar {
     position: relative;
     height: 100%;
     display: flex;

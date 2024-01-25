@@ -1,47 +1,51 @@
-import Timer from '../models/timer.js';
-import TimerView from '../views/timer_view.js';
-
 class TimerController {
-    constructor(startButton, stopButton, timerDisplay) {
-        this.timer = new Timer();
-        this.timerView = new TimerView(timerDisplay);
-        this.startButton = startButton;
-        this.stopButton = stopButton;
+    constructor(timerModel, timerView) {
+        this.timerModel = timerModel;
+        this.timerView = timerView;
 
-        this.stopButton.addEventListener('click', () => this.stopTimer());
-        this.startButton.addEventListener('click', () => this.toggleTimer());
+        this.bindDisplayTimer = this.bindDisplayTimer.bind(this);
+        this.timerModel.bindDisplayTimer(this.bindDisplayTimer);
+
+        this.bindGetTimer = this.bindGetTimer.bind(this);
+        this.timerView.bindGetTimer(this.bindGetTimer);
+
+        this.bindStartTimer = this.bindStartTimer.bind(this);
+        this.timerView.bindStartTimer(this.bindStartTimer);
+
+        this.bindPauseTimer = this.bindPauseTimer.bind(this);
+        this.timerView.bindPauseTimer(this.bindPauseTimer);
+
+        this.bindResumeTimer = this.bindResumeTimer.bind(this);
+        this.timerView.bindResumeTimer(this.bindResumeTimer);
+
+        this.bindStopTimer = this.bindStopTimer.bind(this);
+        this.timerView.bindStopTimer(this.bindStopTimer);
     }
 
-    toggleTimer() {
-        if (this.startButton.textContent === 'Pause') {
-            this.timer.pause();
-            this.startButton.textContent = 'Resume';
-        } else if (this.startButton.textContent === 'Resume') {
-            this.timer.resume();
-            this.startButton.textContent = 'Pause';
-        } else {
-            this.timer.start();
-            this.stopButton.disabled = false;
-            this.startButton.textContent = 'Pause';
-            this.updateTimerDisplay();
-        }
+    bindDisplayTimer(seconds, centiseconds) {
+        this.timerView.displayTimer(seconds, centiseconds);
     }
 
-    stopTimer() {
-        this.timer.stop();
-        this.startButton.textContent = 'Start';
-        this.timerView.reset();
-        this.stopButton.disabled = true;
+    bindGetTimer() {
+        this.timerModel.getTimer();
     }
 
-    updateTimerDisplay() {
-        setInterval(() => {
-            let elapsedTime = this.timer.getElapsedTime();
-            let minutes = Math.floor(elapsedTime / 60000);
-            let seconds = ((elapsedTime % 60000) / 1000).toFixed(0);
-            this.timerView.update(minutes, seconds);
-        }, 1000);
+    bindStartTimer() {
+        this.timerModel.start();
     }
+
+    bindPauseTimer() {
+        this.timerModel.pause();
+    }
+
+    bindResumeTimer() {
+        this.timerModel.resume();
+    }
+
+    bindStopTimer() {
+        this.timerModel.stop();
+    }
+
 }
 
 export default TimerController;
