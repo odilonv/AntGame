@@ -55,60 +55,85 @@ class Grid {
                             Game.getInstance().ants.push(new Agent(row + dx, col + dy));
                         }
                         Grid.cellStartGenerated = true;
-                    } else {
+                    } else
                         this.grid[row][col] = new Free(row, col);
-                    }
                 }
             }
         }
     }
 
     moveAnt(agent) {
-        let moveOK = false;
         let previousX = agent.column;
         let previousY = agent.row;
 
         Game.ctx.clearRect(previousY * Game._cellSize + 20, previousX * Game._cellSize + 20, 20, 20); // Efface le canvas.
-        
 
-        while (moveOK != true) {
-            let whereIsNext;
-            let movesPossible = this.movePossibles(agent);
-            if (agent.direction == 'null') {
-                whereIsNext = agent.moveRandomly();
-            }
-            else {
-                whereIsNext = agent.direction;
-            }
-            let column = parseInt(agent.column);
-            let row = parseInt(agent.row);
-            if (this.grid[column][row].getType().toString() == "Start")
-                for (const cell of agent.listOfPaths)
-                    cell._qty = (1 / agent.listOfPaths.length).toFixed(2);
+        let column = parseInt(agent.column);
+        let row = parseInt(agent.row);
 
-            if (whereIsNext === 'down' && movesPossible.includes('down')) {
-                agent.row += Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps;
-                moveOK = true;
-            }   // en vrai on va vers la droite jsp pk
-            else if (whereIsNext === 'up' && movesPossible.includes('up') || agent.row > parseInt(agent.row) + 0.3) {
-                agent.row += Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps;
-                moveOK = true;
-            }   // en vrai on va vers la gauche jsp pk
-            else if (whereIsNext === 'right' && movesPossible.includes('right')) {
-                agent.column += Math.cos(0) * Game._speed / Game._fps;
-                moveOK = true;
-            }   // en vrai on va vers le bas jsp pk
-            else if (whereIsNext === 'left' && movesPossible.includes('left') || agent.column > parseInt(agent.column) + 0.3) {
-                agent.column += Math.cos(Math.PI) * Game._speed / Game._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
-                moveOK = true;
-            }   // en vrai on va vers le haut jsp pk
-            if (moveOK == false) {
-                agent.direction = 'null';
-            } else {
-                agent.addToPathList(this.grid[column][row]);
+        if (this.isAtTheCenterOfTheCell(agent) || agent.direction == "null") {
+            agent.direction = this.takeDirection(agent);
+        }
+
+        if (this.grid[column][row].getType().toString() == "Start")
+            for (const cell of agent.listOfPaths) {
+                cell._qty = (1 / agent.listOfPaths.length).toFixed(2);
+            }
+
+        if (agent.direction === 'down') {
+            agent.row += Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps;
+        }   // en vrai on va vers la droite jsp pk
+        else if (agent.direction === 'up') {
+            agent.row += Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps;
+        }   // en vrai on va vers la gauche jsp pk
+        else if (agent.direction === 'right') {
+            agent.column += Math.cos(0) * Game._speed / Game._fps;
+        }   // en vrai on va vers le bas jsp pk
+        else if (agent.direction === 'left') {
+            agent.column += Math.cos(Math.PI) * Game._speed / Game._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
+        }   // en vrai on va vers le haut jsp pk
+
+        agent.addToPathList(this.grid[column][row]);
+    }
+
+    takeDirection(agent) {
+        let column = parseInt(agent.column);
+        let row = parseInt(agent.row);
+        let movePossibles = this.movePossibles(agent);
+        for (const movePossible of movePossibles) {
+            if (movePossible == "up" && !agent.listOfPaths.includes(this.grid[column][row - 1])) {
+                return movePossible;
+            }
+            else if (movePossible == "down" && !agent.listOfPaths.includes(this.grid[column][row + 1])) {
+                return movePossible;
+            }
+            else if (movePossible == "left" && !agent.listOfPaths.includes(this.grid[column - 1][row])) {
+                console.log("la case de haut est libre !");
+                return movePossible;
+            }
+            else if (movePossible == "right" && !agent.listOfPaths.includes(this.grid[column + 1][row])) {
+                return movePossible;
             }
         }
+        if (!movePossibles.includes(agent.direction)) {
+            return movePossibles[0];
+        }
+        return agent.direction;
     }
+
+    isAtTheCenterOfTheCell(agent) {
+        if ((agent.direction == "up" && agent.row - parseInt(agent.row) > 0.1 && agent.row - parseInt(agent.row) + Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps < 0.1)) {
+            return true;
+        } else if (agent.direction == "down" && agent.row - parseInt(agent.row) < 0.1 && agent.row - parseInt(agent.row) + Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps > 0.1) {
+            return true
+        } else if (agent.direction == "left" && agent.column - parseInt(agent.column) > 0.1 && agent.column - parseInt(agent.column) + Math.cos(Math.PI) * Game._speed / Game._fps < 0.1) {
+            return true
+        } else if (agent.direction == "right" && agent.column - parseInt(agent.column) < 0.1 && agent.column - parseInt(agent.column) + Math.cos(0) * Game._speed / Game._fps > 0.1) {
+            return true
+        }
+        return false;
+    }
+
 
     movePossibles(agent) {
         let movePossibles = [];
