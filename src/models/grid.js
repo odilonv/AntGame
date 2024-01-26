@@ -3,6 +3,7 @@ import Free from './free.js';
 import Agent from './agent.js';
 import Game from './game.js';
 import Start from './start.js';
+import Objective from './objective.js';
 
 class Grid {
 

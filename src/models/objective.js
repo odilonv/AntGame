@@ -4,7 +4,7 @@ class Objective extends Free {
     constructor(x, y, qty = 1.0) {
         super(x, y);
         this._qty = qty;
-        this.tileIndex = [200, 0];
+        this.tileIndex = [0, 450];
         this.tile.src = 'web/images/tiles/foodAndColony.png';
     }
 
