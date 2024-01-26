@@ -38,10 +38,23 @@ class Grid {
         while (this.grid[this.cellStart.x][this.cellStart.y] instanceof Obstacle);
         this.grid[this.cellStart.x][this.cellStart.y] = this.cellStart;
 
-        for (let nbAnt = 0; nbAnt < Game.nbAnts; nbAnt++) {
+        for (let nbAnt = 0; nbAnt < Game.nbAnts; nbAnt++) { // on génère les fourmis
             Game.getInstance().ants.push(new Agent(this.cellStart.y, this.cellStart.x));
         }
+
+        for (let i = 0; i < Math.floor(Math.random() * (Game.nbAnts - 2)) + 3; i++) {
+            let objectiveRow = Math.floor(Math.random() * (this.size - 2)) + 1;
+            let objectiveCol = Math.floor(Math.random() * (this.size - 2)) + 1;
+            if (this.grid[objectiveRow][objectiveCol] instanceof Obstacle) {
+                i--;
+            } else {
+                let objective = new Objective(objectiveRow, objectiveCol);
+                this.grid[objectiveRow][objectiveCol] = objective;
+            }
+        }
     }
+
+    static objectiveCellsCpt = 0;
 
     createPath(row, col) {
         this.grid[row][col] = new Free(row, col);
@@ -53,8 +66,9 @@ class Grid {
                 if (this.grid[newRow][newCol] instanceof Obstacle) {
                     this.grid[row + dx][col + dy] = new Free(row + dx, col + dy);
                     this.createPath(newRow, newCol);
-                } else if (this.grid[newRow][newCol] instanceof Free)
+                } else if (this.grid[newRow][newCol] instanceof Free) {
                     this.grid[row][col] = new Free(row, col);
+                }
             }
         }
     }
@@ -186,6 +200,10 @@ class Grid {
 
                     ctx.fillText(value.toFixed(2), j * Game._cellSize + 23, i * Game._cellSize + 40);
                 } else if (this.grid[i][j].getType() == "Start") {
+                    let ctx = Game.ctx;
+                    ctx.clearRect(j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 20); // Efface le canvas.
+                    ctx.drawImage(this.grid[i][j].getTile(), this.grid[i][j].tileIndex[0], this.grid[i][j].tileIndex[1], this.grid[i][j].tileSize, this.grid[i][j].tileSize, j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 30);
+                } else if (this.grid[i][j].getType() == "Objective") {
                     let ctx = Game.ctx;
                     ctx.clearRect(j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 20); // Efface le canvas.
                     ctx.drawImage(this.grid[i][j].getTile(), this.grid[i][j].tileIndex[0], this.grid[i][j].tileIndex[1], this.grid[i][j].tileSize, this.grid[i][j].tileSize, j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 30);
