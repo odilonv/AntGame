@@ -16,26 +16,31 @@ class Grid {
     drawGrid() {
         for (let i = 0; i < this.size; i++) {
             this.grid[i] = [];
-            for (let j = 0; j < this.size; j++) {
+            for (let j = 0; j < this.size; j++)
                 this.grid[i][j] = new Obstacle(i, j);
-            }
         }
+
 
         let startRow = Math.floor(Math.random() * (this.size - 2)) + 1;
         let startCol = Math.floor(Math.random() * (this.size - 2)) + 1;
         this.createPath(startRow, startCol);
 
-        for (let i = 0; i < this.size; i++) {
-            for (let j = 0; j < this.size; j++) {
-                if (i === 0 || j === 0 || i === this.size - 1 || j === this.size - 1) {
+        for (let i = 0; i < this.size; i++)
+            for (let j = 0; j < this.size; j++)
+                if (i === 0 || j === 0 || i === this.size - 1 || j === this.size - 1)
                     this.grid[i][j] = new Obstacle(i, j);
-                }
-            }
-        }
-        this.grid[this.cellStart.x][this.cellStart.y] = this.cellStart;
-    }
 
-    static cellStartGenerated = false;
+
+
+        do // On place la fourmilière sur une case libre
+            this.cellStart = new Start(Math.floor(Math.random() * (this.size - 2)) + 1, Math.floor(Math.random() * (this.size - 2)) + 1);
+        while (this.grid[this.cellStart.x][this.cellStart.y] instanceof Obstacle);
+        this.grid[this.cellStart.x][this.cellStart.y] = this.cellStart;
+
+        for (let nbAnt = 0; nbAnt < Game.nbAnts; nbAnt++) {
+            Game.getInstance().ants.push(new Agent(this.cellStart.y, this.cellStart.x));
+        }
+    }
 
     createPath(row, col) {
         this.grid[row][col] = new Free(row, col);
@@ -47,17 +52,8 @@ class Grid {
                 if (this.grid[newRow][newCol] instanceof Obstacle) {
                     this.grid[row + dx][col + dy] = new Free(row + dx, col + dy);
                     this.createPath(newRow, newCol);
-                } else if (this.grid[newRow][newCol] instanceof Free) {
-                    if (!Grid.cellStartGenerated) {
-                        this.cellStart = new Start(col, row);
-                        this.grid[row][col] = this.cellStart;
-                        for (let nbAnt = 0; nbAnt < Game.nbAnts; nbAnt++) {
-                            Game.getInstance().ants.push(new Agent(row + dx, col + dy));
-                        }
-                        Grid.cellStartGenerated = true;
-                    } else
-                        this.grid[row][col] = new Free(row, col);
-                }
+                } else if (this.grid[newRow][newCol] instanceof Free)
+                    this.grid[row][col] = new Free(row, col);
             }
         }
     }
@@ -71,14 +67,14 @@ class Grid {
         let column = parseInt(agent.column);
         let row = parseInt(agent.row);
 
-        if (agent.isAtTheCenterOfTheCell() || agent.direction == "null") {
+        if (agent.isAtTheCenterOfTheCell() || agent.direction == "null")
             agent.direction = this.takeDirection(agent);
-        }
+
 
         if (this.grid[column][row].getType().toString() == "Start") {
-            for (const cell of agent.listOfPaths) {
+            for (const cell of agent.listOfPaths)
                 cell._qty += (1 / agent.listOfPaths.length);
-            }
+
             agent.listOfPaths = [];
             agent.objective = null;
         }
@@ -134,9 +130,6 @@ class Grid {
         }
         return agent.direction;
     }
-
-
-
 
     movePossibles(agent) {
         let movePossibles = [];

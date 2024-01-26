@@ -48,9 +48,7 @@ for (let i = 0; i < _nbLines; i++) {
                     sx, sy, sWidth, sHeight, // Source
                     dx, dy, dWidth, dHeight); // Destination
                 ctx.drawImage(tiles[1], sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-            } else {
-                ctx.drawImage(tiles, sx, sy, sWidth, sHeight, dx + 18, dy + 12, sWidth, sHeight);
-            }
+            } 
         });
     }
 }
