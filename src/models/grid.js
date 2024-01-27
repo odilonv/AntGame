@@ -6,7 +6,6 @@ import Start from './start.js';
 import Objective from './objective.js';
 
 class Grid {
-
     constructor(size) {
         this.size = size;
         this.grid = [];
@@ -20,8 +19,6 @@ class Grid {
             for (let j = 0; j < this.size; j++)
                 this.grid[i][j] = new Obstacle(i, j);
         }
-
-
         let startRow = Math.floor(Math.random() * (this.size - 2)) + 1;
         let startCol = Math.floor(Math.random() * (this.size - 2)) + 1;
         this.createPath(startRow, startCol);
@@ -30,8 +27,6 @@ class Grid {
             for (let j = 0; j < this.size; j++)
                 if (i === 0 || j === 0 || i === this.size - 1 || j === this.size - 1)
                     this.grid[i][j] = new Obstacle(i, j);
-
-
 
         do // On place la fourmilière sur une case libre
             this.cellStart = new Start(Math.floor(Math.random() * (this.size - 2)) + 1, Math.floor(Math.random() * (this.size - 2)) + 1);

@@ -1,5 +1,20 @@
 import Game from '../models/game.js';
 
+// class AntView {
+//     constructor() {
+
+//     }
+
+
+// }
+
+// export default AntView;
+
+
+
+
+
+
 let myGrid = Game.getInstance().grid;
 
 let _startTime = Date.now();
