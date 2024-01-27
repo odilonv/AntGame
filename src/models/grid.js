@@ -40,11 +40,22 @@ class Grid {
         for (let i = 0; i < Math.floor(Math.random() * (Game.nbAnts - 2)) + 3; i++) {
             let objectiveRow = Math.floor(Math.random() * (this.size - 2)) + 1;
             let objectiveCol = Math.floor(Math.random() * (this.size - 2)) + 1;
-            if (this.grid[objectiveRow][objectiveCol] instanceof Obstacle) {
+            if (this.grid[objectiveRow][objectiveCol] instanceof Obstacle || this.grid[objectiveRow][objectiveCol] instanceof Start) {
                 i--;
             } else {
                 let objective = new Objective(objectiveRow, objectiveCol);
                 this.grid[objectiveRow][objectiveCol] = objective;
+            }
+        }
+
+        // on supprime certains obstacles de façon aléatoire
+        for (let index = 0; index < Math.random() * 8 + 2; index++) {
+            let row = Math.floor(Math.random() * (this.size - 2)) + 1;
+            let col = Math.floor(Math.random() * (this.size - 2)) + 1;
+            if (this.grid[row][col].getType() == "Obstacle") {
+                this.grid[row][col] = new Free(row, col);
+            } else {
+                index--;
             }
         }
     }
@@ -80,13 +91,14 @@ class Grid {
         if (agent.isAtTheCenterOfTheCell() || agent.direction == "null")
             agent.direction = this.takeDirection(agent);
 
-
-        if (this.grid[column][row].getType().toString() == "Start") {
+        if (this.grid[column][row].getType() == "Start") {
             for (const cell of agent.listOfPaths)
-                cell._qty += (1 / agent.listOfPaths.length);
+                if (cell.getType() == "Free")
+                    cell._qty += (1 / agent.listOfPaths.length);
 
             agent.listOfPaths = [];
             agent.objective = null;
+            agent.capacity = 0.1;
         }
 
         if (agent.direction === 'down') {
@@ -110,6 +122,25 @@ class Grid {
         let row = parseInt(agent.row);
         let movePossibles = this.movePossibles(agent);
         let movePossiblesNotInPath = [];
+
+        if (agent.capacity == 0) {
+            agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
+            return agent.getDirectionFromObjective();
+        }
+
+        if (this.grid[column][row].getType() == "Objective") {
+            agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
+            if (agent.objective == null)
+                agent.objective = agent.listOfPaths[agent.listOfPaths.length - 1];
+
+            this.grid[column][row]._qty -= 0.1;
+            if (this.grid[column][row]._qty <= 0)
+                this.grid[column][row] = new Free(column, row);
+
+            agent.capacity = 0;
+            return agent.getDirectionFromObjective();
+        }
+
         if (movePossibles.length == 1) {
             return movePossibles[0];
         }

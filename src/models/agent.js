@@ -2,6 +2,7 @@ import Game from './game.js';
 
 class Agent {
     constructor(row, column) {
+        this.capacity = 0.1; // Capacité de la fourmi à transporter de la nourriture.
         this.row = row;
         this.column = column;
         this.direction = 'null';
