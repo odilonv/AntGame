@@ -52,6 +52,17 @@ class Grid {
                 this.grid[objectiveRow][objectiveCol] = objective;
             }
         }
+
+        // on supprime certains obstacles de façon aléatoire
+        for (let index = 0; index < Math.random() * 8 + 2; index++) {
+            let row = Math.floor(Math.random() * (this.size - 2)) + 1;
+            let col = Math.floor(Math.random() * (this.size - 2)) + 1;
+            if (this.grid[row][col].getType() == "Obstacle") {
+                this.grid[row][col] = new Free(row, col);
+            } else {
+                index--;
+            }
+        }
     }
 
     static objectiveCellsCpt = 0;
@@ -85,9 +96,9 @@ class Grid {
         if (agent.isAtTheCenterOfTheCell() || agent.direction == "null")
             agent.direction = this.takeDirection(agent);
 
-        if (this.grid[column][row].getType().toString() == "Start") {
+        if (this.grid[column][row].getType() == "Start") {
             for (const cell of agent.listOfPaths)
-                if (cell.getType().toString() == "Free")
+                if (cell.getType() == "Free")
                     cell._qty += (1 / agent.listOfPaths.length);
 
             agent.listOfPaths = [];
@@ -122,19 +133,16 @@ class Grid {
             return agent.getDirectionFromObjective();
         }
 
-        if (this.grid[column][row].getType().toString() == "Objective") {
+        if (this.grid[column][row].getType() == "Objective") {
             agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
-            if (agent.objective == null) {
+            if (agent.objective == null)
                 agent.objective = agent.listOfPaths[agent.listOfPaths.length - 1];
-            }
+
             this.grid[column][row]._qty -= 0.1;
             if (this.grid[column][row]._qty <= 0)
                 this.grid[column][row] = new Free(column, row);
 
             agent.capacity = 0;
-            console.log(agent.listOfPaths);
-            console.log();
-            console.log("Objective reached : " + agent.objective);
             return agent.getDirectionFromObjective();
         }
 
