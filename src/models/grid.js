@@ -97,9 +97,10 @@ class Grid {
             agent.direction = this.takeDirection(agent);
 
         if (this.grid[column][row].getType() == "Start") {
-            for (const cell of agent.listOfPaths)
-                if (cell.getType() == "Free")
-                    cell._qty += (1 / agent.listOfPaths.length);
+            if (agent.capacity == 0)
+                for (const cell of agent.listOfPaths)
+                    if (cell.getType() == "Free")
+                        cell._qty += (Game._QParameter / agent.listOfPaths.length);
 
             agent.listOfPaths = [];
             agent.objective = null;
@@ -127,10 +128,12 @@ class Grid {
         let row = parseInt(agent.row);
         let movePossibles = this.movePossibles(agent);
         let movePossiblesNotInPath = [];
+        console.log(agent.objective);
 
         if (agent.capacity == 0) {
             agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
-            return agent.getDirectionFromObjective();
+            if (agent.objective != undefined)
+                return agent.getDirectionFromObjective();
         }
 
         if (this.grid[column][row].getType() == "Objective") {
