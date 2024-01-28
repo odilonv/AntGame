@@ -1,14 +1,14 @@
 import Game from '../models/game.js';
 
-// class AntView {
-//     constructor() {
+class AntView {
+    constructor() {
 
-//     }
+    }
 
 
-// }
+}
 
-// export default AntView;
+export default AntView;
 
 
 
@@ -41,3 +41,4 @@ let Update = function () {
 
 }
 Update();
+

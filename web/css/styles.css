@@ -5,7 +5,7 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
-.main {
+#main {
     display: flex;
     justify-content: space-evenly;
     flex-direction: row;
@@ -39,11 +39,23 @@ body {
 }
 
 #timerDisplay {
-    font-size: 5em;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
     padding: 10px;
+    width: 250px;
+
+}
+
+#timerDisplay>div {
+    display: flex;
+    justify-content: center;
+    font-size: 4em;
     color: #B9A88B;
     font-weight: bold;
+    width: 80px
 }
+
 
 .buttons {
     display: flex;

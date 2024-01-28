@@ -8,23 +8,16 @@ class GridController {
 
         this.bindGetDrawingGrid = this.bindGetDrawingGrid.bind(this);
         this.gridView.bindGetDrawingGrid(this.bindGetDrawingGrid);
-
-        this.bindStartAnt = this.bindStartAnt.bind(this);
-        this.gridView.bindStartAnt(this.bindStartAnt);
-
     }
 
-    bindDrawGrid() {
-        this.gridView.drawGrid();
+    bindDrawGrid(tiles, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) {
+        this.gridView.displayBackground(tiles, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
     }
 
     bindGetDrawingGrid() {
         this.gridModel.getDrawingGrid();
     }
 
-    bindStartAnt() {
-        this.gridModel.startAnt();
-    }
 }
 
 export default GridController;

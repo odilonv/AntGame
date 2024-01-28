@@ -36,15 +36,15 @@ class Timer {
 
 
     bindDisplayTimer(callback) {
-        this.DisplayTimer = callback;
+        this.displayTimer = callback;
     }
 
     getTimer() {
         this.timerInterval = setInterval(() => {
             let elapsedTime = this.getElapsedTime();
-            let seconds = Math.floor((elapsedTime / 1000) % 60);
+            let seconds = Math.floor(elapsedTime / 1000);
             let centiseconds = Math.floor((elapsedTime - (seconds * 1000)) / 10);
-            this.DisplayTimer(seconds, centiseconds);
+            this.displayTimer(seconds, centiseconds);
         }, 10);
     }
 

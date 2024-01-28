@@ -1,7 +1,8 @@
 class TimerView {
     constructor(div_id) {
         this.div_id = div_id;
-        this.timerDisplay;
+        this.seconds;
+        this.centiseconds;
         this.initView();
     }
 
@@ -28,11 +29,23 @@ class TimerView {
     initView() {
         let div = document.querySelector(`#${this.div_id}`);
         let divButtons;
+        let timerDisplay = document.createElement('div');
+        let separator = document.createElement('div');
 
-        this.timerDisplay = document.createElement('div');
-        this.timerDisplay.id = 'timerDisplay';
-        this.timerDisplay.textContent = '00:00';
-        div.appendChild(this.timerDisplay);
+        this.seconds = document.createElement('div');
+        this.centiseconds = document.createElement('div');
+        timerDisplay.id = 'timerDisplay';
+        this.seconds.id = 'seconds';
+        this.centiseconds.id = 'centiseconds';
+
+        this.seconds.textContent = '00';
+        separator.textContent = ' : '
+        this.centiseconds.textContent = '00';
+
+        div.appendChild(timerDisplay);
+        timerDisplay.appendChild(this.seconds);
+        timerDisplay.appendChild(separator);
+        timerDisplay.appendChild(this.centiseconds);
 
         if (!document.querySelector('.buttons')) {
             divButtons = document.createElement('div');
@@ -87,15 +100,16 @@ class TimerView {
     }
 
     displayTimer(seconds, centiseconds) {
-        console.log('View : ' + seconds + " " + centiseconds);
-        if (this.timerDisplay) {
-            this.timerDisplay.textContent = `${seconds < 10 ? '0' : ''}${seconds}:${centiseconds < 10 ? '0' : ''}${centiseconds}`;
+        if (this.seconds && this.centiseconds) {
+            this.seconds.textContent = `${seconds < 10 ? '0' : ''}${seconds}`;
+            this.centiseconds.textContent = `${centiseconds < 10 ? '0' : ''}${centiseconds}`;
         }
     }
 
     resetTimer() {
-        if (this.timerDisplay) {
-            this.timerDisplay.textContent = '00:00';
+        if (this.seconds && this.centiseconds) {
+            this.seconds.textContent = '00';
+            this.centiseconds.textContent = '00';
         }
     }
 }
