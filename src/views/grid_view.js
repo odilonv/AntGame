@@ -10,7 +10,11 @@ class GridView {
     bindGetDrawingGrid(callback) {
         this.getDrawingGrid = callback;
         this.getDrawingGrid();
+    }
 
+    bindGetCubes(callback) {
+        this.getCubes = callback;
+        this.getCubes();
     }
 
     initView(size) {
@@ -42,69 +46,56 @@ class GridView {
                     dx, dy, dWidth, dHeight); // Destination
                 ctx.drawImage(tiles[1], sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
             }
-            else {
-                ctx.drawImage(tiles, sx, sy, sWidth, sHeight, dx + 18, dy + 12, sWidth, sHeight);
-            }
         });
     }
+
+    displayFree(value, cube) {
+        let ctx = this.canvas.getContext('2d');
+
+        ctx.font = "10px Arial";
+
+        if (value == 0)
+            ctx.fillStyle = "#ffffff";
+        else if (value < 0.02)
+            ctx.fillStyle = "#d0c087";
+        else if (value < 0.04)
+            ctx.fillStyle = "#94ae8f";
+        else if (value < 0.06)
+            ctx.fillStyle = "#79bc79";
+        else
+            ctx.fillStyle = "#b98d0d";
+
+
+        ctx.clearRect(j * this.cellSize + 20, i * this.cellSize + 20, 30, 20);
+        ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
+
+        ctx.fillText(value.toFixed(2), j * this.cellSize + 23, i * this.cellSize + 40);
+    }
+
+    displaySpecialCube(cube) {
+        let ctx = this.canvas.getContext('2d');
+
+        ctx.clearRect(j * this.cellSize + 20, i * this.cellSize + 20, 30, 20);
+        ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
+    }
+
+    displayAnt(x, y, direction) {
+        let ctx = this.canvas.getContext('2d');
+
+        let image = new Image();
+        image.src = 'web/images/tiles/ant.png';
+
+        ctx.save();
+        ctx.translate(y + 30, x + 30);
+        ctx.rotate((direction == 'up' ? 0 : direction == 'right' ? Math.PI / 2 : direction == 'down' ? Math.PI : 3 * Math.PI / 2));
+        ctx.drawImage(image, -10, -10, 20, 20);
+        ctx.restore();
+    }
+
+
+
 
 
 }
 
 export default GridView;
-
-
-
-// let game = Game.getInstance();
-// let grid = game.grid;
-// grid.drawGrid();
-
-// let _nbLines = grid.grid.length;
-// let _nbColumns = grid.grid[0].length;
-
-// let canvas = Game.canvas;
-
-// canvas.width = _nbColumns * Game._cellSize;
-// canvas.height = _nbLines * Game._cellSize;
-
-
-// function addEventListenersToTiles(tiles, resolve) {
-//     if (Array.isArray(tiles)) {
-//         tiles[0].addEventListener('load', resolve);
-//         tiles[1].addEventListener('load', resolve);
-//     } else {
-//         tiles.addEventListener('load', resolve);
-//     }
-// }
-
-
-
-// let ctx = canvas.getContext('2d');
-
-// for (let i = 0; i < _nbLines; i++) {
-//     for (let j = 0; j < _nbColumns; j++) {
-
-//         let tiles = grid.grid[i][j].getTile();
-//         let tiles = grid.grid[i][j].getTile();
-
-//         let sx = grid.grid[i][j].tileIndex[0];
-//         let sy = grid.grid[i][j].tileIndex[1];
-//         let sWidth = grid.grid[i][j].tileSize;
-//         let sHeight = grid.grid[i][j].tileSize;
-//         let dx = j * Game._cellSize;
-//         let dy = i * Game._cellSize;
-
-//         let scale = 0.4;
-
-//         let dWidth = sWidth * scale;
-//         let dHeight = sHeight * scale;
-//         addEventListenersToTiles(tiles, () => {
-//             if (Array.isArray(tiles)) {
-//                 ctx.drawImage(tiles[0],
-//                     sx, sy, sWidth, sHeight, // Source
-//                     dx, dy, dWidth, dHeight); // Destination
-//                 ctx.drawImage(tiles[1], sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-//             }
-//         });
-//     }
-// }

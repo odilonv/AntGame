@@ -12,10 +12,24 @@ class Grid {
         this.directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
         this.cellStart = null;
         this.createGrid();
+        this.nbAnts = 4;
+        this.ants = [];
     }
 
     bindDrawGrid(callback) {
         this.displayBackground = callback;
+    }
+
+    bindDrawFreeCube(callback) {
+        this.displayFree = callback;
+    }
+
+    bindDrawSpecialCube(callback) {
+        this.displaySpecialCube = callback;
+    }
+
+    bindDrawAnt(callback) {
+        this.displayAnt = callback;
     }
 
     createGrid() {
@@ -38,20 +52,20 @@ class Grid {
         while (this.grid[this.cellStart.x][this.cellStart.y] instanceof Obstacle);
         this.grid[this.cellStart.x][this.cellStart.y] = this.cellStart;
 
-        // for (let nbAnt = 0; nbAnt < Game.nbAnts; nbAnt++) { // on génère les fourmis
-        //     Game.getInstance().ants.push(new Agent(this.cellStart.y, this.cellStart.x));
-        // }
+        for (let nbAnt = 0; nbAnt < this.nbAnts; nbAnt++) { // on génère les fourmis
+            this.grid.ants.push(new Agent(this.cellStart.y, this.cellStart.x));
+        }
 
-        // for (let i = 0; i < Math.floor(Math.random() * (Game.nbAnts - 2)) + 3; i++) {
-        //     let objectiveRow = Math.floor(Math.random() * (this.size - 2)) + 1;
-        //     let objectiveCol = Math.floor(Math.random() * (this.size - 2)) + 1;
-        //     if (this.grid[objectiveRow][objectiveCol] instanceof Obstacle || this.grid[objectiveRow][objectiveCol] instanceof Start) {
-        //         i--;
-        //     } else {
-        //         let objective = new Objective(objectiveRow, objectiveCol);
-        //         this.grid[objectiveRow][objectiveCol] = objective;
-        //     }
-        // }
+        for (let i = 0; i < Math.floor(Math.random() * (this.nbAnts - 2)) + 3; i++) {
+            let objectiveRow = Math.floor(Math.random() * (this.size - 2)) + 1;
+            let objectiveCol = Math.floor(Math.random() * (this.size - 2)) + 1;
+            if (this.grid[objectiveRow][objectiveCol] instanceof Obstacle || this.grid[objectiveRow][objectiveCol] instanceof Start) {
+                i--;
+            } else {
+                let objective = new Objective(objectiveRow, objectiveCol);
+                this.grid[objectiveRow][objectiveCol] = objective;
+            }
+        }
 
         // on supprime certains obstacles de façon aléatoire
         for (let index = 0; index < Math.random() * 8 + 2; index++) {
@@ -66,8 +80,9 @@ class Grid {
     }
 
 
-    getDrawingGrid() {
 
+
+    getDrawingGrid() {
         console.log(this.grid);
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[0].length; j++) {
@@ -106,6 +121,25 @@ class Grid {
                     this.grid[row][col] = new Free(row, col);
                 }
             }
+        }
+    }
+
+    getCubes() {
+        for (let i = 0; i < this.grid.length; i++) {
+            for (let j = 0; j < this.grid[0].length; j++) {
+                if (this.grid[i][j].getType() == "Free") {
+                    let value = this.grid[i][j]._qty;
+                    this.displayFree(value, this.grid[i][j]);
+                } else if (this.grid[i][j].getType() == "Start" || this.grid[i][j].getType() == "Objective") {
+                    this.displaySpecialCube(this.grid[i][j]);
+                }
+            }
+        }
+
+        for (let ant of this.ants) {
+            let x = ant.column * this.cellSize;
+            let y = ant.row * this.cellSize;
+            this.displayAnt(x, y, ant.direction)
         }
     }
 
@@ -308,59 +342,59 @@ export default Grid;
 //         }
 //     }
 
-//     displayAnts() {
-//         let image = new Image();
-//         image.src = 'web/images/tiles/ant.png';
-//         // image.onload = () => {
-//         for (let i = 0; i < this.grid.length; i++) {
-//             for (let j = 0; j < this.grid[0].length; j++) {
-//                 if (this.grid[i][j].getType() == "Free") {
-//                     let ctx = Game.ctx;
+// displayAnts() {
+//     let image = new Image();
+//     image.src = 'web/images/tiles/ant.png';
+//     // image.onload = () => {
+//     for (let i = 0; i < this.grid.length; i++) {
+//         for (let j = 0; j < this.grid[0].length; j++) {
+//             if (this.grid[i][j].getType() == "Free") {
+//                 let ctx = Game.ctx;
 
-//                     let value = this.grid[i][j]._qty;
-//                     ctx.font = "10px Arial";
+//                 let value = this.grid[i][j]._qty;
+//                 ctx.font = "10px Arial";
 
-//                     // couleur blanche pour 0, d0c087 jusqu'à 0.02, 94ae8f jusqu'à 0.04,  79bc79 jusqu'à 0.06, b98d0d > 0.6
-//                     if (value == 0)
-//                         ctx.fillStyle = "#ffffff";
-//                     else if (value < 0.02)
-//                         ctx.fillStyle = "#d0c087";
-//                     else if (value < 0.04)
-//                         ctx.fillStyle = "#94ae8f";
-//                     else if (value < 0.06)
-//                         ctx.fillStyle = "#79bc79";
-//                     else
-//                         ctx.fillStyle = "#b98d0d";
+//                 // couleur blanche pour 0, d0c087 jusqu'à 0.02, 94ae8f jusqu'à 0.04,  79bc79 jusqu'à 0.06, b98d0d > 0.6
+//                 if (value == 0)
+//                     ctx.fillStyle = "#ffffff";
+//                 else if (value < 0.02)
+//                     ctx.fillStyle = "#d0c087";
+//                 else if (value < 0.04)
+//                     ctx.fillStyle = "#94ae8f";
+//                 else if (value < 0.06)
+//                     ctx.fillStyle = "#79bc79";
+//                 else
+//                     ctx.fillStyle = "#b98d0d";
 
 
-//                     ctx.clearRect(j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 20); // Efface le canvas.
+//                 ctx.clearRect(j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 20); // Efface le canvas.
 
-//                     ctx.drawImage(this.grid[i][j].getTile(), this.grid[i][j].tileIndex[0], this.grid[i][j].tileIndex[1], this.grid[i][j].tileSize, this.grid[i][j].tileSize, j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 30);
+//                 ctx.drawImage(this.grid[i][j].getTile(), this.grid[i][j].tileIndex[0], this.grid[i][j].tileIndex[1], this.grid[i][j].tileSize, this.grid[i][j].tileSize, j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 30);
 
-//                     ctx.fillText(value.toFixed(2), j * Game._cellSize + 23, i * Game._cellSize + 40);
-//                 } else if (this.grid[i][j].getType() == "Start") {
-//                     let ctx = Game.ctx;
-//                     ctx.clearRect(j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 20); // Efface le canvas.
-//                     ctx.drawImage(this.grid[i][j].getTile(), this.grid[i][j].tileIndex[0], this.grid[i][j].tileIndex[1], this.grid[i][j].tileSize, this.grid[i][j].tileSize, j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 30);
-//                 } else if (this.grid[i][j].getType() == "Objective") {
-//                     let ctx = Game.ctx;
-//                     ctx.clearRect(j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 20); // Efface le canvas.
-//                     ctx.drawImage(this.grid[i][j].getTile(), this.grid[i][j].tileIndex[0], this.grid[i][j].tileIndex[1], this.grid[i][j].tileSize, this.grid[i][j].tileSize, j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 30);
-//                 }
+//                 ctx.fillText(value.toFixed(2), j * Game._cellSize + 23, i * Game._cellSize + 40);
+//             } else if (this.grid[i][j].getType() == "Start") {
+//                 let ctx = Game.ctx;
+//                 ctx.clearRect(j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 20); // Efface le canvas.
+//                 ctx.drawImage(this.grid[i][j].getTile(), this.grid[i][j].tileIndex[0], this.grid[i][j].tileIndex[1], this.grid[i][j].tileSize, this.grid[i][j].tileSize, j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 30);
+//             } else if (this.grid[i][j].getType() == "Objective") {
+//                 let ctx = Game.ctx;
+//                 ctx.clearRect(j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 20); // Efface le canvas.
+//                 ctx.drawImage(this.grid[i][j].getTile(), this.grid[i][j].tileIndex[0], this.grid[i][j].tileIndex[1], this.grid[i][j].tileSize, this.grid[i][j].tileSize, j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 30);
 //             }
-//             // }
 //         }
-
-//         for (let ant of Game.getInstance().ants) {
-//             let x = ant.column * Game._cellSize;
-//             let y = ant.row * Game._cellSize;
-//             Game.ctx.save();
-//             Game.ctx.translate(y + 30, x + 30);
-//             Game.ctx.rotate((ant.direction == 'up' ? 0 : ant.direction == 'right' ? Math.PI / 2 : ant.direction == 'down' ? Math.PI : 3 * Math.PI / 2));
-//             Game.ctx.drawImage(image, -10, -10, 20, 20);
-//             Game.ctx.restore();
-//         }
+//         // }
 //     }
+
+//     for (let ant of Game.getInstance().ants) {
+//         let x = ant.column * Game._cellSize;
+//         let y = ant.row * Game._cellSize;
+//         Game.ctx.save();
+//         Game.ctx.translate(y + 30, x + 30);
+//         Game.ctx.rotate((ant.direction == 'up' ? 0 : ant.direction == 'right' ? Math.PI / 2 : ant.direction == 'down' ? Math.PI : 3 * Math.PI / 2));
+//         Game.ctx.drawImage(image, -10, -10, 20, 20);
+//         Game.ctx.restore();
+//     }
+// }
 // }
 
 // export default Grid;
