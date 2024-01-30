@@ -268,6 +268,12 @@ class Grid {
             this.moveAnt(ant);
     }
 
+    handleGame(state) {
+        if (state == 'start' || state == 'resume') {
+            this.update();
+        }
+    }
+
     update() {
         let _lag = 0;
         let currentTime = Date.now();
@@ -281,6 +287,7 @@ class Grid {
             this.getCubes();
             _lag -= Game._frameDuration;
         }
+
         requestAnimationFrame(this.update.bind(this));
     }
 }

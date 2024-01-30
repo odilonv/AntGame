@@ -17,21 +17,23 @@ class GridController {
 
         this.bindDrawAnt = this.bindDrawAnt.bind(this);
         this.gridModel.bindDrawAnt(this.bindDrawAnt);
-        
+
         this.bindClearAntPath = this.bindClearAntPath.bind(this);
         this.gridModel.bindClearAntPath(this.bindClearAntPath);
 
         this.bindGetCubes = this.bindGetCubes.bind(this);
         this.gridView.bindGetCubes(this.bindGetCubes);
 
-        this.gridModel.update();
+        this.bindHandleGame = this.bindHandleGame.bind(this);
+        this.gridView.bindHandleGame(this.bindHandleGame);
+
     }
 
     bindDrawGrid(tiles, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) {
         this.gridView.displayBackground(tiles, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
     }
 
-    bindClearAntPath(previousY, previousX){
+    bindClearAntPath(previousY, previousX) {
         this.gridView.clearAntPath(previousY, previousX);
     }
 
@@ -53,6 +55,10 @@ class GridController {
 
     bindGetCubes() {
         this.gridModel.getCubes();
+    }
+
+    bindHandleGame(state) {
+        this.gridModel.handleGame(state);
     }
 
 }
