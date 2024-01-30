@@ -9,7 +9,7 @@ class Game {
     static _QParameter = 1;
     static x = 18;
     static nbAnts = 1;
-    static _speed = 4;
+    static _speed = 8;
     static _cellSize = 40;
 
     static getInstance() {

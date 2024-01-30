@@ -96,7 +96,6 @@ class GridView {
             this.ctx.arc(y + 30, x + 30, 2, 0, 2 * Math.PI);
             this.ctx.fillStyle = "#ff0000";
             this.ctx.fill();
-            
         }
 
     }

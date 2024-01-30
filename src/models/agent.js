@@ -14,13 +14,6 @@ class Agent {
         this.frameDuration = 1000 / this.fps;
     }
 
-    moveRandomly() {
-        const directions = ['up', 'down', 'left', 'right'];
-        const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-        this.direction = randomDirection;
-        return this.direction;
-    }
-
     addToPathList(cell) {
         if (!this.listOfPaths.includes(cell)) {
             this.listOfPaths.push(cell);
@@ -58,6 +51,21 @@ class Agent {
             return true
         }
         return false;
+    }
+
+    move() {
+        if (this.direction === 'down') {
+            this.row += Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps;
+        }
+        else if (this.direction === 'up') {
+            this.row += Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps;
+        }
+        else if (this.direction === 'right') {
+            this.column += Math.cos(0) * Game._speed / Game._fps;
+        }
+        else if (this.direction === 'left') {
+            this.column += Math.cos(Math.PI) * Game._speed / Game._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
+        }
     }
 }
 

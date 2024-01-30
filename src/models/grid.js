@@ -17,7 +17,7 @@ class Grid {
         this.ants = [];
         this.startTime = Date.now();
         this.timer = 0;
-        
+
         this.createGrid();
     }
 
@@ -148,22 +148,13 @@ class Grid {
     }
 
     moveAnt(agent) {
-        let previousX = agent.column;
-        let previousY = agent.row;
-
-        this.clearAntPath(previousY, previousX);
-
+        this.clearAntPath(agent.row, agent.column);
         let column = parseInt(agent.column);
         let row = parseInt(agent.row);
 
-
         if (agent.isAtTheCenterOfTheCell() || agent.direction == "null") {
-            console.log('pass');
             agent.direction = this.takeDirection(agent);
-
         }
-
-
 
         if (this.grid[column][row].getType() == "Start") {
             if (agent.capacity == 0) {
@@ -177,20 +168,7 @@ class Grid {
             agent.capacity = 0.1;
         }
 
-        if (agent.direction === 'down') {
-            agent.row += Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps;
-        }
-        else if (agent.direction === 'up') {
-            agent.row += Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps;
-        }
-        else if (agent.direction === 'right') {
-            agent.column += Math.cos(0) * Game._speed / Game._fps;
-        }
-        else if (agent.direction === 'left') {
-            agent.column += Math.cos(Math.PI) * Game._speed / Game._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
-        }
-
-        // if (this.grid[column][row].getType() != "Objective" && this.grid[column][row].getType() != "Obstacle")
+        agent.move();
         agent.addToPathList(this.grid[column][row]);
     }
 
@@ -199,7 +177,6 @@ class Grid {
         let row = parseInt(agent.row);
         let movePossibles = this.movePossibles(agent);
 
-        console.log(movePossibles);
         let movePossiblesNotInPath = [];
 
         if (agent.capacity == 0) {
@@ -256,7 +233,6 @@ class Grid {
         if (!movePossibles.includes(agent.direction)) {
             return movePossibles[Math.floor(Math.random() * movePossibles.length)];
         }
-
         return agent.direction;
     }
 
@@ -276,13 +252,9 @@ class Grid {
     }
 
     moveAnts() {
-        let movedAnts = new Set();
-        for (let ant of this.ants) {
+        for (let ant of this.ants)
             this.moveAnt(ant);
-            movedAnts.add(ant);
-        }
     }
-
 
     update() {
         let _lag = 0;
@@ -291,7 +263,7 @@ class Grid {
         _lag += deltaTime;
         this.startTime = currentTime;
         this.timer += deltaTime;
-        
+
 
         while (_lag >= Game._frameDuration) {
             this.moveAnts();
@@ -300,9 +272,6 @@ class Grid {
         }
         requestAnimationFrame(this.update.bind(this));
     }
-
-
-
 }
 
 export default Grid;
