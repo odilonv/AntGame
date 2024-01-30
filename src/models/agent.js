@@ -11,7 +11,7 @@ class Agent {
     }
 
     moveRandomly() {
-        const directions = ['up', 'down', 'left', 'right'];
+    const directions = ['up', 'down', 'left', 'right'];
         const randomDirection = directions[Math.floor(Math.random() * directions.length)];
         this.direction = randomDirection;
         return this.direction;

@@ -42,7 +42,7 @@ class Grid {
             Game.getInstance().ants.push(new Agent(this.cellStart.y, this.cellStart.x));
         }
 
-        for (let i = 0; i < Math.floor(Math.random() * (Game.nbAnts - 2)) + 3; i++) {
+        for (let i = 0; i < Math.floor(Math.random() * (Game.nbAnts - 2)) + 10; i++) {
             let objectiveRow = Math.floor(Math.random() * (this.size - 2)) + 1;
             let objectiveCol = Math.floor(Math.random() * (this.size - 2)) + 1;
             if (this.grid[objectiveRow][objectiveCol] instanceof Obstacle || this.grid[objectiveRow][objectiveCol] instanceof Start) {
@@ -54,7 +54,7 @@ class Grid {
         }
 
         // on supprime certains obstacles de façon aléatoire
-        for (let index = 0; index < Math.random() * 8 + 2; index++) {
+        for (let index = 0; index < Math.random() * 8 + 12; index++) {
             let row = Math.floor(Math.random() * (this.size - 2)) + 1;
             let col = Math.floor(Math.random() * (this.size - 2)) + 1;
             if (this.grid[row][col].getType() == "Obstacle") {
@@ -97,11 +97,12 @@ class Grid {
             agent.direction = this.takeDirection(agent);
 
         if (this.grid[column][row].getType() == "Start") {
-            if (agent.capacity == 0)
-                for (const cell of agent.listOfPaths)
+            if (agent.capacity == 0) {
+                for (const cell of agent.listOfPaths) {
                     if (cell.getType() == "Free")
                         cell._qty += (Game._QParameter / agent.listOfPaths.length);
-
+                }
+            }
             agent.listOfPaths = [];
             agent.objective = null;
             agent.capacity = 0.1;
@@ -120,6 +121,7 @@ class Grid {
             agent.column += Math.cos(Math.PI) * Game._speed / Game._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
         }   // en vrai on va vers le haut jsp pk
 
+        // if (this.grid[column][row].getType() != "Objective" && this.grid[column][row].getType() != "Obstacle")
         agent.addToPathList(this.grid[column][row]);
     }
 
@@ -128,12 +130,12 @@ class Grid {
         let row = parseInt(agent.row);
         let movePossibles = this.movePossibles(agent);
         let movePossiblesNotInPath = [];
-        console.log(agent.objective);
 
         if (agent.capacity == 0) {
             agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
-            if (agent.objective != undefined)
+            if (agent.objective != undefined && movePossibles.includes(agent.getDirectionFromObjective())) {
                 return agent.getDirectionFromObjective();
+            }
         }
 
         if (this.grid[column][row].getType() == "Objective") {
@@ -169,13 +171,19 @@ class Grid {
             return movePossiblesNotInPath[Math.floor(Math.random() * movePossiblesNotInPath.length)];
         }
 
-        if (agent.objective != null && movePossibles.includes(agent.getDirectionFromObjective())) {
-            agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
-            return agent.getDirectionFromObjective();
-        }
+        // if (agent.objective != null && agent.objective != undefined) {
+        //     console.log("-----blabla-----");
+        //     agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
+        //     console.log(this.grid[column][row]);
+        //     console.log(agent);
+        //     if (this.grid[column][row] == agent.objective || agent.objective == undefined) {
+        //         agent.objective = agent.listOfPaths[agent.listOfPaths.length - 1];
+        //     }
+        //     return agent.getDirectionFromObjective();
+        // }
+
         if (!movePossibles.includes(agent.direction)) {
-            agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
-            return this.takeDirection(agent);
+            return movePossibles[Math.floor(Math.random() * movePossibles.length)];
         }
         return agent.direction;
     }
@@ -218,15 +226,17 @@ class Grid {
                     // couleur blanche pour 0, d0c087 jusqu'à 0.02, 94ae8f jusqu'à 0.04,  79bc79 jusqu'à 0.06, b98d0d > 0.6 
                     if (value == 0)
                         ctx.fillStyle = "#ffffff";
-                    else if (value < 0.02)
-                        ctx.fillStyle = "#d0c087";
-                    else if (value < 0.04)
-                        ctx.fillStyle = "#94ae8f";
-                    else if (value < 0.06)
-                        ctx.fillStyle = "#79bc79";
-                    else
-                        ctx.fillStyle = "#b98d0d";
-
+                    else if (value > 0) {
+                        if (value < 0.02)
+                            ctx.fillStyle = "#d0c087";
+                        else if (value < 0.04)
+                            ctx.fillStyle = "#94ae8f";
+                        else if (value < 0.06)
+                            ctx.fillStyle = "#79bc79";
+                        else
+                            ctx.fillStyle = "#b98d0d";
+                        this.grid[i][j]._qty -= 0.00001;
+                    }
 
                     ctx.clearRect(j * Game._cellSize + 20, i * Game._cellSize + 20, 30, 20); // Efface le canvas.
 
@@ -251,7 +261,7 @@ class Grid {
             let y = ant.row * Game._cellSize;
             Game.ctx.save();
             Game.ctx.translate(y + 30, x + 30);
-            Game.ctx.rotate((ant.direction == 'up' ? 0 : ant.direction == 'right' ? Math.PI / 2 : ant.direction == 'down' ? Math.PI : 3 * Math.PI / 2));
+            Game.ctx.rotate((ant.direction == 'up' ? 0 : ant.direction == 'right' ? 3 * Math.PI / 2 : ant.direction == 'down' ? Math.PI : Math.PI / 2));
             Game.ctx.drawImage(image, -10, -10, 20, 20);
             Game.ctx.restore();
         }
