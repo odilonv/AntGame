@@ -51,7 +51,6 @@ class GridView {
     displayFree(i, j, cube) {
         let value = cube._qty;
 
-
         this.ctx.font = "10px Arial";
 
         if (value == 0)
@@ -78,27 +77,33 @@ class GridView {
         this.ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
     }
 
-    displayAnt(x, y, direction) {
+    displayAnt(ant) {
         let image = new Image();
         image.src = 'web/images/tiles/ant.png';
 
+        let x = ant.column * this.cellSize;
+        let y = ant.row * this.cellSize;
+
         this.ctx.save();
         this.ctx.translate(y + 30, x + 30);
-        this.ctx.rotate(direction == 'up' ? 0 : direction == 'right' ? 3 * Math.PI / 2 : direction == 'down' ? Math.PI : Math.PI / 2);
+        this.ctx.rotate(ant.direction == 'up' ? 0 : ant.direction == 'right' ? 3 * Math.PI / 2 : ant.direction == 'down' ? Math.PI : Math.PI / 2);
         this.ctx.drawImage(image, -10, -10, 20, 20);
         this.ctx.restore();
+
+        if (ant.capacity == 0) {
+            // descine un petit rond rouge sur la fourmis
+            this.ctx.beginPath();
+            this.ctx.arc(y + 30, x + 30, 2, 0, 2 * Math.PI);
+            this.ctx.fillStyle = "#ff0000";
+            this.ctx.fill();
+            
+        }
+
     }
 
     clearAntPath(previousY, previousX) {
         this.ctx.clearRect(previousY * this.cellSize + 20, previousX * this.cellSize + 20, 20, 20);
     }
-
-
-
-
-
-
-
 }
 
 export default GridView;

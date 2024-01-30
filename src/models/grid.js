@@ -142,9 +142,7 @@ class Grid {
                 }
             }
             for (let ant of this.ants) {
-                let x = ant.column * this.cellSize;
-                let y = ant.row * this.cellSize;
-                this.displayAnt(x, y, ant.direction)
+                this.displayAnt(ant)
             }
         }
     }

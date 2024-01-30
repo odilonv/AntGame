@@ -43,8 +43,8 @@ class GridController {
         this.gridView.displayFree(i, j, cube);
     }
 
-    bindDrawAnt(x, y, direction) {
-        this.gridView.displayAnt(x, y, direction);
+    bindDrawAnt(ant) {
+        this.gridView.displayAnt(ant);
     }
 
     bindGetDrawingGrid() {
