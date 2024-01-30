@@ -1,9 +1,6 @@
-import Game from './game.js';
-
 class Agent {
-    constructor(grid, row, column) {
+    constructor(row, column) {
         this.capacity = 0.1; // Capacité de la fourmi à transporter de la nourriture.
-        this.grid = grid;
         this.row = row;
         this.column = column;
         this.direction = 'null';
@@ -17,24 +14,6 @@ class Agent {
     }
 
 
-
-    update() {
-        let _timer = 0;
-
-        let currentTime = Date.now();
-        let deltaTime = currentTime - this.startTime;
-        this.lag += deltaTime;
-        this.startTime = currentTime;
-        _timer += deltaTime;
-
-        while (this.lag >= this.frameDuration) {
-            this.grid.moveAnts();
-            this.grid.displayAnts();
-            this.lag -= this.frameDuration;
-        }
-
-        requestAnimationFrame(this.update);
-    }
 
     moveRandomly() {
         const directions = ['up', 'down', 'left', 'right'];
@@ -70,13 +49,13 @@ class Agent {
     }
 
     isAtTheCenterOfTheCell() {
-        if (this.direction == "up" && this.row - parseInt(this.row) > 0.1 && this.row - parseInt(this.row) + Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps < 0.1) {
+        if (this.direction == "up" && this.row - parseInt(this.row) > 0.1 && this.row - parseInt(this.row) + Math.sin(Math.PI / 2) * -1 * this.speed / this.fps < 0.1) {
             return true;
-        } else if (this.direction == "down" && this.row - parseInt(this.row) < 0.1 && this.row - parseInt(this.row) + Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps > 0.1) {
+        } else if (this.direction == "down" && this.row - parseInt(this.row) < 0.1 && this.row - parseInt(this.row) + Math.sin(3 * (Math.PI / 2)) * -1 * this.speed / this.fps > 0.1) {
             return true
-        } else if (this.direction == "left" && this.column - parseInt(this.column) > 0.1 && this.column - parseInt(this.column) + Math.cos(Math.PI) * Game._speed / Game._fps < 0.1) {
+        } else if (this.direction == "left" && this.column - parseInt(this.column) > 0.1 && this.column - parseInt(this.column) + Math.cos(Math.PI) * this.speed / this.fps < 0.1) {
             return true
-        } else if (this.direction == "right" && this.column - parseInt(this.column) < 0.1 && this.column - parseInt(this.column) + Math.cos(0) * Game._speed / Game._fps > 0.1) {
+        } else if (this.direction == "right" && this.column - parseInt(this.column) < 0.1 && this.column - parseInt(this.column) + Math.cos(0) * this.speed / this.fps > 0.1) {
             return true
         }
         return false;

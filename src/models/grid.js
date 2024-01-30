@@ -2,6 +2,8 @@ import Obstacle from './obstacle.js';
 import Free from './free.js';
 import Start from './start.js';
 import Objective from './objective.js';
+import Agent from './agent.js';
+import Game from './game.js'
 
 
 class Grid {
@@ -11,9 +13,13 @@ class Grid {
         this.grid = [];
         this.directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
         this.cellStart = null;
-        this.createGrid();
         this.nbAnts = 4;
         this.ants = [];
+        this.startTime = Date.now();
+        this.timer = 0;
+
+        this.createGrid();
+
     }
 
     bindDrawGrid(callback) {
@@ -53,7 +59,8 @@ class Grid {
         this.grid[this.cellStart.x][this.cellStart.y] = this.cellStart;
 
         for (let nbAnt = 0; nbAnt < this.nbAnts; nbAnt++) { // on génère les fourmis
-            this.grid.ants.push(new Agent(this.cellStart.y, this.cellStart.x));
+            this.ants.push(new Agent(this.cellStart.y, this.cellStart.x));
+            console.log(this.ants);
         }
 
         for (let i = 0; i < Math.floor(Math.random() * (this.nbAnts - 2)) + 3; i++) {
@@ -78,9 +85,6 @@ class Grid {
             }
         }
     }
-
-
-
 
     getDrawingGrid() {
         console.log(this.grid);
@@ -128,20 +132,160 @@ class Grid {
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[0].length; j++) {
                 if (this.grid[i][j].getType() == "Free") {
-                    let value = this.grid[i][j]._qty;
-                    this.displayFree(value, this.grid[i][j]);
+                    this.displayFree(i, j, this.grid[i][j]);
                 } else if (this.grid[i][j].getType() == "Start" || this.grid[i][j].getType() == "Objective") {
-                    this.displaySpecialCube(this.grid[i][j]);
+                    this.displaySpecialCube(i, j, this.grid[i][j]);
                 }
             }
-        }
-
-        for (let ant of this.ants) {
-            let x = ant.column * this.cellSize;
-            let y = ant.row * this.cellSize;
-            this.displayAnt(x, y, ant.direction)
+            for (let ant of this.ants) {
+                let x = ant.column * this.cellSize;
+                let y = ant.row * this.cellSize;
+                this.displayAnt(x, y, ant.direction)
+            }
         }
     }
+
+    moveAnt(agent) {
+        let previousX = agent.column;
+        let previousY = agent.row;
+
+        //Game.ctx.clearRect(previousY * Game._cellSize + 20, previousX * Game._cellSize + 20, 20, 20); // Efface le canvas.
+
+        let column = parseInt(agent.column);
+        let row = parseInt(agent.row);
+
+        if (agent.isAtTheCenterOfTheCell() || agent.direction == "null")
+            agent.direction = this.takeDirection(agent);
+
+        console.log(this.grid[column][row]);
+
+        if (this.grid[column][row].getType() == "Start") {
+            for (const cell of agent.listOfPaths)
+                if (cell.getType() == "Free")
+                    cell._qty += (1 / agent.listOfPaths.length);
+
+            agent.listOfPaths = [];
+            agent.objective = null;
+            agent.capacity = 0.1;
+        }
+
+        if (agent.direction === 'down') {
+            agent.row += Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps;
+        }
+        else if (agent.direction === 'up') {
+            agent.row += Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps;
+        }
+        else if (agent.direction === 'right') {
+            agent.column += Math.cos(0) * Game._speed / Game._fps;
+        }
+        else if (agent.direction === 'left') {
+            agent.column += Math.cos(Math.PI) * Game._speed / Game._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
+        }
+
+        agent.addToPathList(this.grid[column][row]);
+    }
+
+    takeDirection(agent) {
+        let column = parseInt(agent.column);
+        let row = parseInt(agent.row);
+        let movePossibles = this.movePossibles(agent);
+        let movePossiblesNotInPath = [];
+
+        if (agent.capacity == 0) {
+            agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
+            return agent.getDirectionFromObjective();
+        }
+
+        if (this.grid[column][row].getType() == "Objective") {
+            agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
+            if (agent.objective == null)
+                agent.objective = agent.listOfPaths[agent.listOfPaths.length - 1];
+
+            this.grid[column][row]._qty -= 0.1;
+            if (this.grid[column][row]._qty <= 0)
+                this.grid[column][row] = new Free(column, row);
+
+            agent.capacity = 0;
+            return agent.getDirectionFromObjective();
+        }
+
+        if (movePossibles.length == 1) {
+            return movePossibles[0];
+        }
+        if (movePossibles.includes("up") && !agent.listOfPaths.includes(this.grid[column][row - 1])) {
+            movePossiblesNotInPath.push("up");
+        }
+        if (movePossibles.includes("down") && !agent.listOfPaths.includes(this.grid[column][row + 1])) {
+            movePossiblesNotInPath.push("down");
+        }
+        if (movePossibles.includes("left") && !agent.listOfPaths.includes(this.grid[column - 1][row])) {
+            movePossiblesNotInPath.push("left");
+        }
+        if (movePossibles.includes("right") && !agent.listOfPaths.includes(this.grid[column + 1][row])) {
+            movePossiblesNotInPath.push("right");
+        }
+
+        if (movePossiblesNotInPath.length > 0) {
+            return movePossiblesNotInPath[Math.floor(Math.random() * movePossiblesNotInPath.length)];
+        }
+
+        if (agent.objective != null && movePossibles.includes(agent.getDirectionFromObjective())) {
+            agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
+            return agent.getDirectionFromObjective();
+        }
+        if (!movePossibles.includes(agent.direction)) {
+            agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
+            return this.takeDirection(agent);
+        }
+        return agent.direction;
+    }
+
+    movePossibles(agent) {
+        console.log(agent);
+        let movePossibles = [];
+        let column = parseInt(agent.column);
+        let row = parseInt(agent.row);
+        if (column < this.size - 1 && this.grid[column + 1][row].getType() != "Obstacle")
+            movePossibles.push('right');
+        if (column > 0 && this.grid[column - 1][row].getType() != "Obstacle")
+            movePossibles.push('left');
+        if (row < this.size - 1 && this.grid[column][row + 1].getType() != "Obstacle")
+            movePossibles.push('down');
+        if (row > 0 && this.grid[column][row - 1].getType() != "Obstacle")
+            movePossibles.push('up');
+        return movePossibles;
+    }
+
+    moveAnts() {
+        let movedAnts = new Set();
+        for (let ant of this.ants) {
+            this.moveAnt(ant);
+            movedAnts.add(ant);
+        }
+        console.log(movedAnts);
+    }
+
+
+    update() {
+        let _lag = 0;
+        let _fps = 60; // Frame rate.
+        let _frameDuration = 1000 / _fps;
+        let currentTime = Date.now();
+        let deltaTime = currentTime - this.startTime;
+        _lag += deltaTime;
+        this.startTime = currentTime;
+        this.timer += deltaTime;
+
+
+        while (_lag >= _frameDuration) {
+            this.moveAnts();
+            this.getCubes();
+            _lag -= _frameDuration;
+        }
+        requestAnimationFrame(this.update.bind(this));
+    }
+
+
 
 }
 

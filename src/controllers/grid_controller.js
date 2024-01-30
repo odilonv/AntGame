@@ -11,29 +11,31 @@ class GridController {
 
         this.bindDrawSpecialCube = this.bindDrawSpecialCube.bind(this);
         this.gridModel.bindDrawSpecialCube(this.bindDrawSpecialCube);
-        
+
         this.bindDrawFreeCube = this.bindDrawFreeCube.bind(this);
         this.gridModel.bindDrawFreeCube(this.bindDrawFreeCube);
-        
+
         this.bindDrawAnt = this.bindDrawAnt.bind(this);
         this.gridModel.bindDrawAnt(this.bindDrawAnt);
 
         this.bindGetCubes = this.bindGetCubes.bind(this);
         this.gridView.bindGetCubes(this.bindGetCubes);
+
+        this.gridModel.update();
     }
 
     bindDrawGrid(tiles, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) {
         this.gridView.displayBackground(tiles, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
     }
 
-    bindDrawSpecialCube(cube) {
-        this.gridView.displaySpecialCube(cube);
+    bindDrawSpecialCube(i, j, cube) {
+        this.gridView.displaySpecialCube(i, j, cube);
     }
 
-    bindDrawFreeCube(value, cube) {
-        this.gridView.displayFree(value, cube);
+    bindDrawFreeCube(i, j, cube) {
+        this.gridView.displayFree(i, j, cube);
     }
-    
+
     bindDrawAnt(x, y, direction) {
         this.gridView.displayAnt(x, y, direction);
     }
