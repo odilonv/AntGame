@@ -17,9 +17,8 @@ class Grid {
         this.ants = [];
         this.startTime = Date.now();
         this.timer = 0;
-
+        
         this.createGrid();
-
     }
 
     bindDrawGrid(callback) {
@@ -135,9 +134,9 @@ class Grid {
             for (let j = 0; j < this.grid[0].length; j++) {
                 if (this.grid[i][j].getType() == "Free") {
                     this.displayFree(i, j, this.grid[i][j]);
-                    if (this.grid[i][j]._qty > 0) 
-                        this.grid[i][j]._qty -= 0.00001;    
-                    
+                    if (this.grid[i][j]._qty > 0)
+                        this.grid[i][j]._qty -= 0.00001;
+
                 } else if (this.grid[i][j].getType() == "Start" || this.grid[i][j].getType() == "Objective") {
                     this.displaySpecialCube(i, j, this.grid[i][j]);
                 }
@@ -289,19 +288,17 @@ class Grid {
 
     update() {
         let _lag = 0;
-        let _fps = 60; // Frame rate.
-        let _frameDuration = 1000 / _fps;
         let currentTime = Date.now();
         let deltaTime = currentTime - this.startTime;
         _lag += deltaTime;
         this.startTime = currentTime;
         this.timer += deltaTime;
+        
 
-
-        while (_lag >= _frameDuration) {
+        while (_lag >= Game._frameDuration) {
             this.moveAnts();
             this.getCubes();
-            _lag -= _frameDuration;
+            _lag -= Game._frameDuration;
         }
         requestAnimationFrame(this.update.bind(this));
     }

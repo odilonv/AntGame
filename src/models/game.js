@@ -6,9 +6,8 @@ class Game {
     static instance = null;
     static _fps = 120; // Frame rate.
     static _frameDuration = 1000 / Game._fps;
-    static _lag = 0;
     static _QParameter = 1;
-    static size = 18;
+    static x = 18;
     static nbAnts = 1;
     static _speed = 4;
     static _cellSize = 40;
