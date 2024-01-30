@@ -10,13 +10,6 @@ class Agent {
         this.objective = null; // Indice de listOfPaths qui correspond à la cellule objectif.
     }
 
-    moveRandomly() {
-    const directions = ['up', 'down', 'left', 'right'];
-        const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-        this.direction = randomDirection;
-        return this.direction;
-    }
-
     Move(durationFrame) {
         // let _direction = 0; // En radian.
         // let _speed = 1; // Nous voulons que 1 cellule (de notre grille) soit parcourue en 1 seconde (doit être dépendant des FPS fixés car la fonction est appelée à chaque frame). Notre unité de vitesse est donc "le nombre de cellules de la grille parcourues/seconde".
