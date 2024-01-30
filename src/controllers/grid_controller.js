@@ -39,8 +39,8 @@ class GridController {
         this.gridView.displaySpecialCube(i, j, cube);
     }
 
-    bindDrawFreeCube(i, j, cube) {
-        this.gridView.displayFree(i, j, cube);
+    bindDrawFreeCube(i, j, cube, qtyMax) {
+        this.gridView.displayFree(i, j, cube, qtyMax);
     }
 
     bindDrawAnt(ant) {

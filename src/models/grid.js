@@ -13,7 +13,6 @@ class Grid {
         this.grid = [];
         this.directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
         this.cellStart = null;
-        this.nbAnts = 4;
         this.ants = [];
         this.startTime = Date.now();
         this.timer = 0;
@@ -61,11 +60,11 @@ class Grid {
         while (this.grid[this.cellStart.x][this.cellStart.y] instanceof Obstacle);
         this.grid[this.cellStart.x][this.cellStart.y] = this.cellStart;
 
-        for (let nbAnt = 0; nbAnt < this.nbAnts; nbAnt++) { // on génère les fourmis
+        for (let nbAnt = 0; nbAnt < Game.nbAnts; nbAnt++) { // on génère les fourmis
             this.ants.push(new Agent(this.cellStart.y, this.cellStart.x));
         }
 
-        for (let i = 0; i < Math.floor(Math.random() * (this.nbAnts - 2)) + 10; i++) {
+        for (let i = 0; i < Math.floor(Math.random() * (Game.nbAnts - 2)) + 10; i++) {
             let objectiveRow = Math.floor(Math.random() * (this.size - 2)) + 1;
             let objectiveCol = Math.floor(Math.random() * (this.size - 2)) + 1;
             if (this.grid[objectiveRow][objectiveCol] instanceof Obstacle || this.grid[objectiveRow][objectiveCol] instanceof Start) {
@@ -130,10 +129,13 @@ class Grid {
     }
 
     getCubes() {
+        let qtyMax = 0;
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[0].length; j++) {
                 if (this.grid[i][j].getType() == "Free") {
-                    this.displayFree(i, j, this.grid[i][j]);
+                    if (this.grid[i][j]._qty > qtyMax)
+                        qtyMax = this.grid[i][j]._qty;
+                    this.displayFree(i, j, this.grid[i][j], qtyMax);
                     if (this.grid[i][j]._qty > 0)
                         this.grid[i][j]._qty -= 0.00001;
 
@@ -141,9 +143,9 @@ class Grid {
                     this.displaySpecialCube(i, j, this.grid[i][j]);
                 }
             }
-            for (let ant of this.ants) {
-                this.displayAnt(ant)
-            }
+        }
+        for (let ant of this.ants) {
+            this.displayAnt(ant)
         }
     }
 
@@ -159,8 +161,10 @@ class Grid {
         if (this.grid[column][row].getType() == "Start") {
             if (agent.capacity == 0) {
                 for (const cell of agent.listOfPaths) {
-                    if (cell.getType() == "Free")
+                    if (cell.getType() == "Free") {
                         cell._qty += (Game._QParameter / agent.listOfPaths.length);
+                        cell._qtyFromBegining += (Game._QParameter / agent.listOfPaths.length);
+                    }
                 }
             }
             agent.listOfPaths = [];

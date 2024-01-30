@@ -37,7 +37,6 @@ class GridView {
     }
 
     displayBackground(tiles, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) {
-
         this.addEventListenersToTiles(tiles, () => {
             if (Array.isArray(tiles)) {
                 this.ctx.drawImage(tiles[0],
@@ -48,27 +47,39 @@ class GridView {
         });
     }
 
-    displayFree(i, j, cube) {
-        let value = cube._qty;
+    displayFree(i, j, cube, qtyMax) {
+        this.ctx.clearRect(j * this.cellSize + 19, i * this.cellSize + 20, 30, 20);
+        this.ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
+        if (false) {
+            let value = cube._qty;
 
-        this.ctx.font = "10px Arial";
+            this.ctx.font = "10px Arial";
 
+            this.ctx.fillStyle = this.getColorFromQty(value);
+            this.ctx.fillText(value.toFixed(2), j * this.cellSize + 23, i * this.cellSize + 40);
+        } else {
+            let value = cube._qtyFromBegining;
+            let ratio = value / qtyMax;
+            this.ctx.beginPath();
+            this.ctx.arc(j * this.cellSize + 30, i * this.cellSize + 30, 10 * ratio, 0, 2 * Math.PI);
+            this.ctx.fillStyle = this.getColorFromQty(value);
+            this.ctx.fill();
+        }
+    }
+
+    getColorFromQty(value) { 
         if (value == 0)
-            this.ctx.fillStyle = "#ffffff";
+            return "#ffffff";
         else if (value > 0) {
             if (value < 0.02)
-                this.ctx.fillStyle = "#d0c087";
+                return "#d0c087";
             else if (value < 0.04)
-                this.ctx.fillStyle = "#94ae8f";
+                return "#94ae8f";
             else if (value < 0.06)
-                this.ctx.fillStyle = "#79bc79";
+                return "#79bc79";
             else
-                this.ctx.fillStyle = "#b98d0d";
+                return "#b98d0d";
         }
-
-        this.ctx.clearRect(j * this.cellSize + 20, i * this.cellSize + 20, 30, 20);
-        this.ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
-        this.ctx.fillText(value.toFixed(2), j * this.cellSize + 23, i * this.cellSize + 40);
     }
 
     displaySpecialCube(i, j, cube) {
