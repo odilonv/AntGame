@@ -192,7 +192,7 @@ class Grid {
 
         if (this.grid[column][row].getType() == "Objective") {
             agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
-            if (agent.objective == null)
+            if (agent.objective == null) 
                 agent.objective = agent.listOfPaths[agent.listOfPaths.length - 1];
 
             this.grid[column][row]._qty -= 0.1;
@@ -237,6 +237,14 @@ class Grid {
         if (!movePossibles.includes(agent.direction)) {
             return movePossibles[Math.floor(Math.random() * movePossibles.length)];
         }
+
+        // une part de hasard fais en sorte de changer de route
+        if (Math.random() < 0.1) {
+            console.log("test");
+            return movePossibles[Math.floor(Math.random() * movePossibles.length)];
+        }
+
+
         return agent.direction;
     }
 

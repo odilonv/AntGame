@@ -57,17 +57,34 @@ class GridView {
 
             this.ctx.fillStyle = this.getColorFromQty(value);
             this.ctx.fillText(value.toFixed(2), j * this.cellSize + 23, i * this.cellSize + 40);
-        } else {
+        } else if (cube._qtyFromBegining > 0) {
             let value = cube._qtyFromBegining;
             let ratio = value / qtyMax;
             this.ctx.beginPath();
-            this.ctx.arc(j * this.cellSize + 30, i * this.cellSize + 30, 10 * ratio, 0, 2 * Math.PI);
-            this.ctx.fillStyle = this.getColorFromQty(value);
+            this.ctx.arc(j * this.cellSize + 30, i * this.cellSize + 30, 4 + 6 * ratio, 0, 2 * Math.PI);
+
+            //Attribuer les couleurs en fonction du ratio 80004a b300df 9400ff 6744ff aac6ff cce8ff
+            if (ratio < 0.2) {
+                this.ctx.fillStyle = "#cce8ff";
+            } else if (ratio < 0.4) {
+                this.ctx.fillStyle = "#aac6ff";
+            } else if (ratio < 0.6) {
+                this.ctx.fillStyle = "#6744ff"; 
+            } else if (ratio < 0.8) {
+                this.ctx.fillStyle = "#9400ff";
+            } else if (ratio < 1) {
+                this.ctx.fillStyle = "#b300df"; 
+            } else
+                this.ctx.fillStyle = "#80004a"; 
+
+
             this.ctx.fill();
         }
     }
 
-    getColorFromQty(value) { 
+    getColorFromQty(value) {
+
+
         if (value == 0)
             return "#ffffff";
         else if (value > 0) {

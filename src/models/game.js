@@ -8,7 +8,7 @@ class Game {
     static _frameDuration = 1000 / Game._fps;
     static _QParameter = 1;
     static x = 18;
-    static nbAnts = 20;
+    static nbAnts = 3;
     static _speed = 8;
     static _cellSize = 40;
 
