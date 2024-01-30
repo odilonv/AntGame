@@ -5,6 +5,7 @@ class GridView {
         this.canvas;
         this.cellSize = cellSize;
         this.initView(this.size);
+
         this.ctx = this.canvas.getContext('2d');
     }
 
@@ -17,12 +18,39 @@ class GridView {
         this.getCubes = callback;
     }
 
+    bindHandleGame(callback) {
+        this.handleGame = callback;
+    }
+
+
+
     initView(size) {
         let div = document.querySelector(`#${this.div_id}`);
         this.canvas = document.createElement('canvas');
         this.canvas.id = 'my_canvas';
         this.canvas.width = size * this.cellSize;
         this.canvas.height = size * this.cellSize;
+        if (document.getElementById('startButton') && document.getElementById('stopButton')) {
+            let startButton = document.getElementById('startButton');
+            let stopButton = document.getElementById('stopButton');
+
+            stopButton.addEventListener('click', () => {
+                this.handleGame('stop');
+            }
+            );
+            startButton.addEventListener('click',
+                () => {
+                    if (startButton.textContent === 'Pause') {
+                        this.handleGame('start');
+                    } else if (startButton.textContent === 'Resume') {
+                        this.handleGame('resume');
+                    } else {
+                        this.handleGame('pause');
+                    }
+                }
+            );
+        }
+
 
         div.appendChild(this.canvas);
     }
@@ -48,8 +76,6 @@ class GridView {
     }
 
     displayFree(i, j, cube, qtyMax) {
-        this.ctx.clearRect(j * this.cellSize + 19, i * this.cellSize + 20, 30, 20);
-        this.ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
         if (false) {
             let value = cube._qty;
 
@@ -67,7 +93,7 @@ class GridView {
         }
     }
 
-    getColorFromQty(value) { 
+    getColorFromQty(value) {
         if (value == 0)
             return "#ffffff";
         else if (value > 0) {
