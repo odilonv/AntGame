@@ -17,6 +17,9 @@ class GridController {
 
         this.bindDrawAnt = this.bindDrawAnt.bind(this);
         this.gridModel.bindDrawAnt(this.bindDrawAnt);
+        
+        this.bindClearAntPath = this.bindClearAntPath.bind(this);
+        this.gridModel.bindClearAntPath(this.bindClearAntPath);
 
         this.bindGetCubes = this.bindGetCubes.bind(this);
         this.gridView.bindGetCubes(this.bindGetCubes);
@@ -26,6 +29,10 @@ class GridController {
 
     bindDrawGrid(tiles, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) {
         this.gridView.displayBackground(tiles, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+    }
+
+    bindClearAntPath(previousY, previousX){
+        this.gridView.clearAntPath(previousY, previousX);
     }
 
     bindDrawSpecialCube(i, j, cube) {

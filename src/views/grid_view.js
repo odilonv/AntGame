@@ -78,7 +78,6 @@ class GridView {
     }
 
     displayAnt(x, y, direction) {
-
         let image = new Image();
         image.src = 'web/images/tiles/ant.png';
 
@@ -87,6 +86,10 @@ class GridView {
         this.ctx.rotate((direction == 'up' ? 0 : direction == 'right' ? Math.PI / 2 : direction == 'down' ? Math.PI : 3 * Math.PI / 2));
         this.ctx.drawImage(image, -10, -10, 20, 20);
         this.ctx.restore();
+    }
+
+    clearAntPath(previousY, previousX) {
+        this.ctx.clearRect(previousY * this.cellSize + 20, previousX * this.cellSize + 20, 20, 20);
     }
 
 

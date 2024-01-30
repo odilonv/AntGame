@@ -38,6 +38,10 @@ class Grid {
         this.displayAnt = callback;
     }
 
+    bindClearAntPath(callback) {
+        this.clearAntPath = callback;
+    }
+
     createGrid() {
         for (let i = 0; i < this.size; i++) {
             this.grid[i] = [];
@@ -60,7 +64,6 @@ class Grid {
 
         for (let nbAnt = 0; nbAnt < this.nbAnts; nbAnt++) { // on génère les fourmis
             this.ants.push(new Agent(this.cellStart.y, this.cellStart.x));
-            console.log(this.ants);
         }
 
         for (let i = 0; i < Math.floor(Math.random() * (this.nbAnts - 2)) + 3; i++) {
@@ -87,7 +90,6 @@ class Grid {
     }
 
     getDrawingGrid() {
-        console.log(this.grid);
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[0].length; j++) {
 
@@ -149,15 +151,19 @@ class Grid {
         let previousX = agent.column;
         let previousY = agent.row;
 
-        //Game.ctx.clearRect(previousY * Game._cellSize + 20, previousX * Game._cellSize + 20, 20, 20); // Efface le canvas.
+        this.clearAntPath(previousY, previousX);
 
         let column = parseInt(agent.column);
         let row = parseInt(agent.row);
 
-        if (agent.isAtTheCenterOfTheCell() || agent.direction == "null")
+
+        if (agent.isAtTheCenterOfTheCell() || agent.direction == "null") {
+            console.log('pass');
             agent.direction = this.takeDirection(agent);
 
-        console.log(this.grid[column][row]);
+        }
+
+
 
         if (this.grid[column][row].getType() == "Start") {
             for (const cell of agent.listOfPaths)
@@ -189,6 +195,8 @@ class Grid {
         let column = parseInt(agent.column);
         let row = parseInt(agent.row);
         let movePossibles = this.movePossibles(agent);
+
+        console.log(movePossibles);
         let movePossiblesNotInPath = [];
 
         if (agent.capacity == 0) {
@@ -237,11 +245,11 @@ class Grid {
             agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
             return this.takeDirection(agent);
         }
+
         return agent.direction;
     }
 
     movePossibles(agent) {
-        console.log(agent);
         let movePossibles = [];
         let column = parseInt(agent.column);
         let row = parseInt(agent.row);
@@ -262,7 +270,6 @@ class Grid {
             this.moveAnt(ant);
             movedAnts.add(ant);
         }
-        console.log(movedAnts);
     }
 
 
