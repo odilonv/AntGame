@@ -68,13 +68,17 @@ class GridView {
 
         this.ctx.clearRect(j * this.cellSize + 20, i * this.cellSize + 20, 30, 20);
         this.ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
-
         this.ctx.fillText(value.toFixed(2), j * this.cellSize + 23, i * this.cellSize + 40);
     }
 
     displaySpecialCube(i, j, cube) {
-        this.ctx.clearRect(j * this.cellSize + 20, i * this.cellSize + 20, 30, 20);
-        this.ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
+        this.ctx.clearRect(j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
+        if (cube.getType() == "Objective") {
+            // si c'est un objectif, on affiche l'image proportionnellement à la quantité restantes de nourriture
+            this.ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30 * (cube._qty + 0.1), 30 * (cube._qty + 0.1));
+        } else {
+            this.ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
+        }
     }
 
     displayAnt(ant) {

@@ -264,7 +264,6 @@ class Grid {
         this.startTime = currentTime;
         this.timer += deltaTime;
 
-
         while (_lag >= Game._frameDuration) {
             this.moveAnts();
             this.getCubes();
