@@ -14,8 +14,10 @@ class Grid {
         this.directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
         this.cellStart = null;
         this.ants = [];
-        this.startTime = Date.now();
-        this.timer = 0;
+        this.startTime;
+        this.timer;
+
+        this.isRunning = false;
 
         this.createGrid();
     }
@@ -38,6 +40,10 @@ class Grid {
 
     bindClearAntPath(callback) {
         this.clearAntPath = callback;
+    }
+
+    bindDisplayPheromones(callback) {
+        this.displayPheromones = callback;
     }
 
     createGrid() {
@@ -154,6 +160,7 @@ class Grid {
     }
 
     moveAnt(agent) {
+
         this.clearAntPath(agent.row, agent.column);
         let column = parseInt(agent.column);
         let row = parseInt(agent.row);
@@ -316,12 +323,30 @@ class Grid {
     }
 
     handleGame(state) {
-        if (state == 'start' || state == 'resume') {
+        if (state == 'start') {
+            this.startTime = Date.now();
+            this.timer = 0;
+            this.pauseTime = 0;
+            this.isRunning = true;
             this.update();
+        }
+        else if (state == 'resume') {
+            this.isRunning = true;
+            this.startTime += Date.now() - this.pauseTime;
+            this.update();
+        } else if (state == 'pause') {
+            this.isRunning = false;
+            this.pauseTime = Date.now(); 
+        } else if (state == 'stop') {
+            this.isRunning = false;
+            location.reload();
         }
     }
 
     update() {
+        if (!this.isRunning) {
+            return;
+        }
         let _lag = 0;
         let currentTime = Date.now();
         let deltaTime = currentTime - this.startTime;

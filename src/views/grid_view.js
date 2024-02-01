@@ -11,7 +11,6 @@ class GridView {
 
     bindGetDrawingGrid(callback) {
         this.getDrawingGrid = callback;
-        this.getDrawingGrid();
     }
 
     bindGetCubes(callback) {
@@ -22,14 +21,13 @@ class GridView {
         this.handleGame = callback;
     }
 
-
-
     initView(size) {
         let div = document.querySelector(`#${this.div_id}`);
         this.canvas = document.createElement('canvas');
         this.canvas.id = 'my_canvas';
         this.canvas.width = size * this.cellSize;
         this.canvas.height = size * this.cellSize;
+
         if (document.getElementById('startButton') && document.getElementById('stopButton')) {
             let startButton = document.getElementById('startButton');
             let stopButton = document.getElementById('stopButton');
@@ -40,12 +38,18 @@ class GridView {
             );
             startButton.addEventListener('click',
                 () => {
-                    if (startButton.textContent === 'Pause') {
+                    if (startButton.textContent === 'Start') {
                         this.handleGame('start');
-                    } else if (startButton.textContent === 'Resume') {
-                        this.handleGame('resume');
-                    } else {
+                        startButton.textContent = 'Pause';
+
+                    } else if (startButton.textContent === 'Pause') {
                         this.handleGame('pause');
+                        startButton.textContent = 'Resume';
+                    }
+                    else if (startButton.textContent === 'Resume') {
+                        this.handleGame('resume');
+                        startButton.textContent = 'Pause';
+
                     }
                 }
             );
@@ -53,6 +57,15 @@ class GridView {
 
 
         div.appendChild(this.canvas);
+
+        let pheromones = document.createElement('button');
+
+        pheromones.id = 'pheromones';
+        pheromones.textContent = 'Pheromones';
+
+        pheromones.addEventListener('click', () => {
+            this.displayPheromones();
+        });
     }
 
     addEventListenersToTiles(tiles, resolve) {
@@ -75,15 +88,27 @@ class GridView {
         });
     }
 
+    displayPheromones() {
+        this.displayPheromones = !this.displayPheromones;
+    }
+
     displayFree(i, j, cube, qtyMax) {
         this.ctx.clearRect(j * this.cellSize + 19, i * this.cellSize + 20, 30, 30);
-        if (cube._qtyPheromonesFromBegining > 0) {
+        if (!this.displayPheromones) {
+            let value = cube._qtyPheromones;
+
+            this.ctx.font = "10px Arial";
+
+            this.ctx.fillStyle = this.getColorFromQty(value);
+            this.ctx.fillText(value.toFixed(2), j * this.cellSize + 23, i * this.cellSize + 40);
+        }
+        else if (cube._qtyPheromonesFromBegining > 0) {
             let value = cube._qtyPheromonesFromBegining;
             const ratio = (value / qtyMax) > 1 ? 1 : (value / qtyMax);
             const taille = 4 + 6 * ratio;
             this.ctx.beginPath();
             this.ctx.arc(j * this.cellSize + 34, i * this.cellSize + 34, taille, 0, 2 * Math.PI);
-            
+
             //Attribuer les couleurs en fonction du ratio 80004a b300df 9400ff 6744ff aac6ff cce8ff
             if (ratio < 0.2) {
                 this.ctx.fillStyle = "#cce8ff";
@@ -98,16 +123,7 @@ class GridView {
             } else
                 this.ctx.fillStyle = "#80004a";
 
-
             this.ctx.fill();
-        }
-        if (true) {
-            let value = cube._qtyPheromones;
-
-            this.ctx.font = "10px Arial";
-
-            this.ctx.fillStyle = this.getColorFromQty(value);
-            this.ctx.fillText(value.toFixed(2), j * this.cellSize + 23, i * this.cellSize + 40);
         }
     }
 

@@ -19,7 +19,7 @@ class TimerController {
         this.timerView.bindResumeTimer(this.bindResumeTimer);
 
         this.bindStopTimer = this.bindStopTimer.bind(this);
-        this.timerView.bindStopTimer(this.bindStopTimer);
+        this.timerView.bindStopTimer(this.bindStopTimer);        
     }
 
     bindDisplayTimer(seconds, centiseconds) {
@@ -45,7 +45,6 @@ class TimerController {
     bindStopTimer() {
         this.timerModel.stop();
     }
-
 }
 
 export default TimerController;

@@ -26,6 +26,7 @@ class TimerView {
         this.getTimer = callback;
     }
 
+
     initView() {
         let div = document.querySelector(`#${this.div_id}`);
         let divButtons;
@@ -57,15 +58,11 @@ class TimerView {
         }
 
         let stopButton = document.createElement('button');
-        let pheromones = document.createElement('button');
         let startButton = document.createElement('button');
 
         stopButton.id = 'stopButton';
         stopButton.textContent = 'Stop';
         stopButton.disabled = true;
-
-        pheromones.id = 'pheromones';
-        pheromones.textContent = 'Pheromones';
 
         startButton.id = 'startButton';
         startButton.textContent = 'Start';
@@ -81,14 +78,11 @@ class TimerView {
             () => {
                 if (startButton.textContent === 'Pause') {
                     this.pauseTimer();
-                    startButton.textContent = 'Resume';
                 } else if (startButton.textContent === 'Resume') {
                     this.resumeTimer();
-                    startButton.textContent = 'Pause';
                 } else {
                     this.startTimer();
                     stopButton.disabled = false;
-                    startButton.textContent = 'Pause';
                     this.getTimer();
                 }
             }
