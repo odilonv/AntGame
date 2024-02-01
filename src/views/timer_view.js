@@ -91,6 +91,13 @@ class TimerView {
             }
         );
 
+        let game = this;
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === 'hidden' && startButton.textContent === 'Pause') {
+                game.pauseTimer();
+            } 
+        });
+
         divButtons.appendChild(stopButton);
         divButtons.appendChild(pheromones);
         div.appendChild(startButton);

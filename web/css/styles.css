@@ -19,6 +19,32 @@ body {
     border-radius: 20px;
 }
 
+@keyframes slideDown {
+    0% {
+        top: -100px;
+        opacity: 0;
+    }
+
+    100% {
+        top: 20%;
+        opacity: 0.4;
+    }
+}
+
+#pauseNotif {
+    position: fixed;
+    top: 20%;
+    left: 65%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    border-radius: 20px;
+    background-color: #B9A88B;
+    color: white;
+    padding: 50px;
+    border: 1px solid white;
+    animation: slideDown 0.5s ease-out;
+}
+
 #sidebar {
     position: relative;
     height: 100%;
