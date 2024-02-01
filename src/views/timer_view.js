@@ -81,14 +81,11 @@ class TimerView {
             () => {
                 if (startButton.textContent === 'Pause') {
                     this.pauseTimer();
-                    startButton.textContent = 'Resume';
                 } else if (startButton.textContent === 'Resume') {
                     this.resumeTimer();
-                    startButton.textContent = 'Pause';
                 } else {
                     this.startTimer();
                     stopButton.disabled = false;
-                    startButton.textContent = 'Pause';
                     this.getTimer();
                 }
             }

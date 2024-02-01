@@ -11,7 +11,6 @@ class GridView {
 
     bindGetDrawingGrid(callback) {
         this.getDrawingGrid = callback;
-        this.getDrawingGrid();
     }
 
     bindGetCubes(callback) {
@@ -22,14 +21,13 @@ class GridView {
         this.handleGame = callback;
     }
 
-
-
     initView(size) {
         let div = document.querySelector(`#${this.div_id}`);
         this.canvas = document.createElement('canvas');
         this.canvas.id = 'my_canvas';
         this.canvas.width = size * this.cellSize;
         this.canvas.height = size * this.cellSize;
+
         if (document.getElementById('startButton') && document.getElementById('stopButton')) {
             let startButton = document.getElementById('startButton');
             let stopButton = document.getElementById('stopButton');
@@ -40,12 +38,18 @@ class GridView {
             );
             startButton.addEventListener('click',
                 () => {
-                    if (startButton.textContent === 'Pause') {
+                    if (startButton.textContent === 'Start') {
                         this.handleGame('start');
-                    } else if (startButton.textContent === 'Resume') {
-                        this.handleGame('resume');
-                    } else {
+                        startButton.textContent = 'Pause';
+
+                    } else if (startButton.textContent === 'Pause') {
                         this.handleGame('pause');
+                        startButton.textContent = 'Resume';
+                    }
+                    else if (startButton.textContent === 'Resume') {
+                        this.handleGame('resume');
+                        startButton.textContent = 'Pause';
+
                     }
                 }
             );

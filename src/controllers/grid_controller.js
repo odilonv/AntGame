@@ -27,6 +27,10 @@ class GridController {
         this.bindHandleGame = this.bindHandleGame.bind(this);
         this.gridView.bindHandleGame(this.bindHandleGame);
 
+
+        this.gridModel.getDrawingGrid();
+
+
     }
 
     bindDrawGrid(tiles, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) {
