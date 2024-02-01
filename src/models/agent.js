@@ -53,6 +53,19 @@ class Agent {
         return false;
     }
 
+    isDirectionInverse(direction) {
+        if (this.direction == "up" && direction == "down") {
+            return true;
+        } else if (this.direction == "down" && direction == "up") {
+            return true;
+        } else if (this.direction == "left" && direction == "right") {
+            return true;
+        } else if (this.direction == "right" && direction == "left") {
+            return true;
+        }
+        return false;
+    }
+
     move() {
         if (this.direction === 'down') {
             this.row += Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps;

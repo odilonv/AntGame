@@ -128,16 +128,18 @@ class Grid {
         }
     }
 
+    static qtyMaxFromBegining = 0;
+
     getCubes() {
         let qtyMax = 0;
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[0].length; j++) {
                 if (this.grid[i][j].getType() == "Free") {
-                    if (this.grid[i][j]._qty > qtyMax)
-                        qtyMax = this.grid[i][j]._qty;
-                    this.displayFree(i, j, this.grid[i][j], qtyMax);
-                    if (this.grid[i][j]._qty > 0)
-                        this.grid[i][j]._qty -= 0.00001;
+                    if (this.grid[i][j]._qtyPheromonesFromBegining > qtyMax)
+                        qtyMax = this.grid[i][j]._qtyPheromonesFromBegining;
+                    this.displayFree(i, j, this.grid[i][j], Grid.qtyMaxFromBegining);
+                    if (this.grid[i][j]._qtyPheromones > 0)
+                        this.grid[i][j]._qtyPheromones -= 0.00001;
 
                 } else if (this.grid[i][j].getType() == "Start" || this.grid[i][j].getType() == "Objective") {
                     this.displaySpecialCube(i, j, this.grid[i][j]);
@@ -147,6 +149,8 @@ class Grid {
         for (let ant of this.ants) {
             this.displayAnt(ant)
         }
+        if (qtyMax > Grid.qtyMaxFromBegining)
+            Grid.qtyMaxFromBegining = qtyMax;
     }
 
     moveAnt(agent) {
@@ -162,8 +166,8 @@ class Grid {
             if (agent.capacity == 0) {
                 for (const cell of agent.listOfPaths) {
                     if (cell.getType() == "Free") {
-                        cell._qty += (Game._QParameter / agent.listOfPaths.length);
-                        cell._qtyFromBegining += (Game._QParameter / agent.listOfPaths.length);
+                        cell._qtyPheromones += (Game._QParameter / agent.listOfPaths.length);
+                        cell._qtyPheromonesFromBegining += (Game._QParameter / agent.listOfPaths.length);
                     }
                 }
             }
@@ -192,7 +196,7 @@ class Grid {
 
         if (this.grid[column][row].getType() == "Objective") {
             agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
-            if (agent.objective == null) 
+            if (agent.objective == null)
                 agent.objective = agent.listOfPaths[agent.listOfPaths.length - 1];
 
             this.grid[column][row]._qty -= 0.1;
@@ -206,42 +210,89 @@ class Grid {
         if (movePossibles.length == 1) {
             return movePossibles[0];
         }
-        if (movePossibles.includes("up") && !agent.listOfPaths.includes(this.grid[column][row - 1])) {
-            movePossiblesNotInPath.push("up");
-        }
-        if (movePossibles.includes("down") && !agent.listOfPaths.includes(this.grid[column][row + 1])) {
-            movePossiblesNotInPath.push("down");
-        }
-        if (movePossibles.includes("left") && !agent.listOfPaths.includes(this.grid[column - 1][row])) {
-            movePossiblesNotInPath.push("left");
-        }
-        if (movePossibles.includes("right") && !agent.listOfPaths.includes(this.grid[column + 1][row])) {
-            movePossiblesNotInPath.push("right");
-        }
 
-        if (movePossiblesNotInPath.length > 0) {
-            return movePossiblesNotInPath[Math.floor(Math.random() * movePossiblesNotInPath.length)];
-        }
+        if (Math.random() < 0.2) {
+            if (movePossibles.includes("up") && !agent.listOfPaths.includes(this.grid[column][row - 1])) {
+                movePossiblesNotInPath.push("up");
+            }
+            if (movePossibles.includes("down") && !agent.listOfPaths.includes(this.grid[column][row + 1])) {
+                movePossiblesNotInPath.push("down");
+            }
+            if (movePossibles.includes("left") && !agent.listOfPaths.includes(this.grid[column - 1][row])) {
+                movePossiblesNotInPath.push("left");
+            }
+            if (movePossibles.includes("right") && !agent.listOfPaths.includes(this.grid[column + 1][row])) {
+                movePossiblesNotInPath.push("right");
+            }
 
-        // if (agent.objective != null && agent.objective != undefined) {
-        //     console.log("-----blabla-----");
-        //     agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
-        //     console.log(this.grid[column][row]);
-        //     console.log(agent);
-        //     if (this.grid[column][row] == agent.objective || agent.objective == undefined) {
-        //         agent.objective = agent.listOfPaths[agent.listOfPaths.length - 1];
-        //     }
-        //     return agent.getDirectionFromObjective();
-        // }
+            if (movePossiblesNotInPath.length > 0) {
+                return movePossiblesNotInPath[Math.floor(Math.random() * movePossiblesNotInPath.length)];
+            }
+        }
+        else {
+            // on privilégie les cases en fonction du nombre de phéromones, tout en évitant de revenir 
+            // sur ses pas(utilisation de agent.isDirectionInverse(direction))
+            let maxQty = 0;
+            let maxQtyDirection = [];
+            
+            for (let direction of movePossibles) {
+                if (!agent.isDirectionInverse(direction)) {
+                    if (direction == "up") {
+                        if (this.grid[column][row - 1]._qtyPheromones > maxQty) {
+                            maxQty = this.grid[column][row - 1]._qtyPheromones;
+                            maxQtyDirection = [];
+                            maxQtyDirection.push("up");
+                        } else if (this.grid[column][row - 1]._qtyPheromones == maxQty) {
+                            maxQtyDirection.push("up");
+                        }
+                    }
+                    else if (direction == "down") {
+                        if (this.grid[column][row + 1]._qtyPheromones > maxQty) {
+                            maxQty = this.grid[column][row + 1]._qtyPheromones;
+                            maxQtyDirection = [];
+                            maxQtyDirection.push("down");
+                        } else if (this.grid[column][row + 1]._qtyPheromones == maxQty) {
+                            maxQtyDirection.push("down");
+                        }
+                    }
+                    else if (direction == "left") {
+                        if (this.grid[column - 1][row]._qtyPheromones > maxQty) {
+                            maxQty = this.grid[column - 1][row]._qtyPheromones;
+                            maxQtyDirection = [];
+                            maxQtyDirection.push("left");
+                        } else if (this.grid[column - 1][row]._qtyPheromones == maxQty) {
+                            maxQtyDirection.push("left");
+                        }
+                    }
+                    else if (direction == "right") {
+                        if (this.grid[column + 1][row]._qtyPheromones > maxQty) {
+                            maxQty = this.grid[column + 1][row]._qtyPheromones;
+                            maxQtyDirection = [];
+                            maxQtyDirection.push("right");
+                        } else if (this.grid[column + 1][row]._qtyPheromones == maxQty) {
+                            maxQtyDirection.push("right");
+                        }
+                    }
+                }
+            }
+            if (maxQtyDirection.length > 0) {
+                return maxQtyDirection[Math.floor(Math.random() * maxQtyDirection.length)];
+            }
+            
+
+
+
+        }
 
         if (!movePossibles.includes(agent.direction)) {
             return movePossibles[Math.floor(Math.random() * movePossibles.length)];
         }
 
-        // une part de hasard fais en sorte de changer de route
-        if (Math.random() < 0.1) {
-            console.log("test");
-            return movePossibles[Math.floor(Math.random() * movePossibles.length)];
+        if (Math.random() < 0.5) {
+            const direction = movePossibles[Math.floor(Math.random() * movePossibles.length)];
+            if (!agent.isDirectionInverse(direction)) {
+                return direction;
+            }
         }
 
 

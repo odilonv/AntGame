@@ -76,39 +76,42 @@ class GridView {
     }
 
     displayFree(i, j, cube, qtyMax) {
-        if (false) {
-            let value = cube._qty;
-
-            this.ctx.font = "10px Arial";
-
-            this.ctx.fillStyle = this.getColorFromQty(value);
-            this.ctx.fillText(value.toFixed(2), j * this.cellSize + 23, i * this.cellSize + 40);
-        } else if (cube._qtyFromBegining > 0) {
-            let value = cube._qtyFromBegining;
-            let ratio = value / qtyMax;
+        this.ctx.clearRect(j * this.cellSize + 19, i * this.cellSize + 20, 30, 30);
+        if (cube._qtyPheromonesFromBegining > 0) {
+            let value = cube._qtyPheromonesFromBegining;
+            const ratio = (value / qtyMax) > 1 ? 1 : (value / qtyMax);
+            const taille = 4 + 6 * ratio;
             this.ctx.beginPath();
-            this.ctx.arc(j * this.cellSize + 30, i * this.cellSize + 30, 4 + 6 * ratio, 0, 2 * Math.PI);
-
+            this.ctx.arc(j * this.cellSize + 34, i * this.cellSize + 34, taille, 0, 2 * Math.PI);
+            
             //Attribuer les couleurs en fonction du ratio 80004a b300df 9400ff 6744ff aac6ff cce8ff
             if (ratio < 0.2) {
                 this.ctx.fillStyle = "#cce8ff";
             } else if (ratio < 0.4) {
                 this.ctx.fillStyle = "#aac6ff";
             } else if (ratio < 0.6) {
-                this.ctx.fillStyle = "#6744ff"; 
+                this.ctx.fillStyle = "#6744ff";
             } else if (ratio < 0.8) {
                 this.ctx.fillStyle = "#9400ff";
             } else if (ratio < 1) {
-                this.ctx.fillStyle = "#b300df"; 
+                this.ctx.fillStyle = "#b300df";
             } else
-                this.ctx.fillStyle = "#80004a"; 
+                this.ctx.fillStyle = "#80004a";
 
 
             this.ctx.fill();
         }
+        if (true) {
+            let value = cube._qtyPheromones;
+
+            this.ctx.font = "10px Arial";
+
+            this.ctx.fillStyle = this.getColorFromQty(value);
+            this.ctx.fillText(value.toFixed(2), j * this.cellSize + 23, i * this.cellSize + 40);
+        }
     }
 
-    getColorFromQty(value) { 
+    getColorFromQty(value) {
         if (value == 0)
             return "#ffffff";
         else if (value > 0) {
@@ -126,8 +129,14 @@ class GridView {
     displaySpecialCube(i, j, cube) {
         this.ctx.clearRect(j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
         if (cube.getType() == "Objective") {
-            // si c'est un objectif, on affiche l'image proportionnellement à la quantité restantes de nourriture
-            this.ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30 * (cube._qty + 0.1), 30 * (cube._qty + 0.1));
+            const qty_min = 0.1;
+            const qty_max = 1;
+            const ratio_min = 0.6;
+            const ratio_max = 1.1;
+
+            const ratio = (cube._qty - qty_min) * (ratio_max - ratio_min) / (qty_max - qty_min) + ratio_min;
+
+            this.ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30 * ratio, 30 * ratio);
         } else {
             this.ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
         }
@@ -147,7 +156,6 @@ class GridView {
         this.ctx.restore();
 
         if (ant.capacity == 0) {
-            // descine un petit rond rouge sur la fourmis
             this.ctx.beginPath();
             this.ctx.arc(y + 30, x + 30, 2, 0, 2 * Math.PI);
             this.ctx.fillStyle = "#ff0000";
