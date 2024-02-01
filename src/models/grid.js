@@ -278,10 +278,6 @@ class Grid {
             if (maxQtyDirection.length > 0) {
                 return maxQtyDirection[Math.floor(Math.random() * maxQtyDirection.length)];
             }
-            
-
-
-
         }
 
         if (!movePossibles.includes(agent.direction)) {
