@@ -55,17 +55,32 @@ class GridView {
             );
         }
 
-
         div.appendChild(this.canvas);
 
-        let pheromones = document.createElement('button');
+        let game = this;
 
-        pheromones.id = 'pheromones';
-        pheromones.textContent = 'Pheromones';
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === 'hidden' && startButton.textContent === 'Pause') {
+                game.handleGame('pause');
+                startButton.textContent = 'Resume';
+            } else if (startButton.textContent === 'Resume') {
+                let notification = document.createElement('div');
+                notification.textContent = 'Le jeu a été mis en pause';
+                notification.id = 'pauseNotif';
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 5000);
+            }
+        });
+
+        let pheromones = document.getElementById('pheromones');
 
         pheromones.addEventListener('click', () => {
             this.displayPheromones();
         });
+
     }
 
     addEventListenersToTiles(tiles, resolve) {
@@ -89,12 +104,12 @@ class GridView {
     }
 
     displayPheromones() {
-        this.displayPheromones = !this.displayPheromones;
+        this._displayPheromones = !this._displayPheromones;
     }
 
     displayFree(i, j, cube, qtyMax) {
         this.ctx.clearRect(j * this.cellSize + 19, i * this.cellSize + 20, 30, 30);
-        if (!this.displayPheromones) {
+        if (!this._displayPheromones) {
             let value = cube._qtyPheromones;
 
             this.ctx.font = "10px Arial";

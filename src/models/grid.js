@@ -42,10 +42,6 @@ class Grid {
         this.clearAntPath = callback;
     }
 
-    bindDisplayPheromones(callback) {
-        this.displayPheromones = callback;
-    }
-
     createGrid() {
         for (let i = 0; i < this.size; i++) {
             this.grid[i] = [];

@@ -10,12 +10,3 @@ let gridSize = 18, cellSize = 40;
 const timer = new TimerController(new Timer(), new TimerView('sidebar'));
 const grid = new GridController(new Grid(gridSize, cellSize), new GridView(gridSize, 'main', cellSize));
 
-document.addEventListener("visibilitychange", function () {
-    if (document.visibilityState === 'hidden') {
-        // L'utilisateur est parti de l'onglet
-        console.log('L\'utilisateur n\'est plus actif sur cette page.');
-    } else {
-        // L'utilisateur est revenu sur l'onglet
-        console.log('L\'utilisateur est revenu sur cette page.');
-    }
-});

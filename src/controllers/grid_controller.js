@@ -26,10 +26,7 @@ class GridController {
 
         this.bindHandleGame = this.bindHandleGame.bind(this);
         this.gridView.bindHandleGame(this.bindHandleGame);
-
-        this.bindDisplayPheromones = this.bindDisplayPheromones.bind(this);
-        this.gridView.bindDisplayPheromones(this.bindDisplayPheromones);
-
+        
         this.gridModel.getDrawingGrid();
     }
 
@@ -64,11 +61,6 @@ class GridController {
     bindHandleGame(state) {
         this.gridModel.handleGame(state);
     }
-
-    bindDisplayPheromones() {
-        this.gridView.displayPheromones();
-    }
-
 }
 
 export default GridController;

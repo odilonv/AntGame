@@ -58,12 +58,16 @@ class TimerView {
         }
 
         let stopButton = document.createElement('button');
+        let pheromones = document.createElement('button');
         let startButton = document.createElement('button');
 
         stopButton.id = 'stopButton';
         stopButton.textContent = 'Stop';
         stopButton.disabled = true;
 
+        pheromones.id = 'pheromones';
+        pheromones.textContent = 'Pheromones';
+        
         startButton.id = 'startButton';
         startButton.textContent = 'Start';
 
