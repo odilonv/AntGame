@@ -78,7 +78,7 @@ class Grid {
         }
 
         // on supprime certains obstacles de façon aléatoire
-        for (let index = 0; index < Math.random() * 8 + 12; index++) {
+        for (let index = 0; index < Math.random() * 8 + 5; index++) {
             let row = Math.floor(Math.random() * (this.size - 2)) + 1;
             let col = Math.floor(Math.random() * (this.size - 2)) + 1;
             if (this.grid[row][col].getType() == "Obstacle") {
