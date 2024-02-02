@@ -141,7 +141,7 @@ class Grid {
                         qtyMax = this.grid[i][j]._qtyPheromonesFromBegining;
                     this.displayFree(i, j, this.grid[i][j], Grid.qtyMaxFromBegining);
                     if (this.grid[i][j]._qtyPheromones > 0)
-                        this.grid[i][j]._qtyPheromones -= 0.00001;
+                        this.grid[i][j]._qtyPheromones -= 0.00003;
 
                 } else if (this.grid[i][j].getType() == "Start" || this.grid[i][j].getType() == "Objective") {
                     this.displaySpecialCube(i, j, this.grid[i][j]);
@@ -195,6 +195,9 @@ class Grid {
             if (agent.objective != undefined && movePossibles.includes(agent.getDirectionFromObjective())) {
                 if (agent.isDirectionInverse(agent.getDirectionFromObjective())) {
                     console.log("test");
+                    agent.x = this.cellStart.y;
+                    agent.y = this.cellStart.x;
+                    return movePossibles[Math.floor(Math.random() * movePossibles.length)];
                 }
                 return agent.getDirectionFromObjective();
             }
@@ -239,6 +242,8 @@ class Grid {
 
         if (movePossiblesNotInPath.length > 0 && Math.random() < 0.3) {
             return movePossiblesNotInPath[Math.floor(Math.random() * movePossiblesNotInPath.length)];
+        } else if (Math.random() < 0.1) {
+            return movePossibles[Math.floor(Math.random() * movePossibles.length)];
         }
         else {
             let maxPheromones = 0;
