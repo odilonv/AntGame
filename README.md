@@ -1,4 +1,45 @@
-<h1> Projet de développement : Système multi-agents et recherche des plus courts chemins </h1>
+# AntGame
+
+**AntGame** est un projet réalisé durant ma première année de formation d'ingénieur à l'**IMT Mines Alès**.
+
+## Fonctionnalités supplémentaires 
+
+Nous avons décidé d'ajouter ces fonctionnalités qui sortent de la consigne du projet afin de créer une meilleure experience utilisateur.
+
+- Grille **modulable** et **personnalisable**
+- Génération des **chemins aléatoires**
+- Application **responsive**
+- Génération **aléatoire** de la nourriture (image et position).
+Taille de l’image dépendante de la quantité restante.
+- Génération **aléatoire** de la fourmilière (image et position)
+- Tous les paramètres de la simulation sont **personnalisables** (ex: taille de la grille, taille des cellules, nombres et vitesses des fourmis, nombres d’objectifs).
+
+
+
+## Getting Started
+
+1. Clonez le repertoire sur votre machine locale:
+
+   ```bash
+   git clone https://github.com/odilonv/AntGame.git
+   ```
+
+2. Vous avez seulement à lancer le projet à l'aide de la commande:
+
+   ```bash
+   node server.js
+   ```
+
+## Contributeurs
+**Author**: Raphaël DIMECK, Odilon VIDAL
+
+
+<br>
+<br><br>
+
+<h1>Consignes</h1>
+
+<h2> Projet de développement : Système multi-agents et recherche des plus courts chemins </h2>
 
 <div align="center">
     <img src="web/images/readMe/startDemo.png" height="300">
