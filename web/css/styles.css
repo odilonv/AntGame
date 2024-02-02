@@ -26,21 +26,21 @@ body {
     }
 
     100% {
-        top: 20%;
-        opacity: 0.4;
+        top: 6%;
+        opacity: 1;
     }
 }
 
 #pauseNotif {
     position: fixed;
-    top: 20%;
+    top: 6%;
     left: 65%;
     transform: translate(-50%, -50%);
     z-index: 100;
     border-radius: 20px;
     background-color: #B9A88B;
     color: white;
-    padding: 50px;
+    padding: 10px;
     border: 1px solid white;
     animation: slideDown 0.5s ease-out;
 }

@@ -67,7 +67,7 @@ class TimerView {
 
         pheromones.id = 'pheromones';
         pheromones.textContent = 'Pheromones';
-        
+
         startButton.id = 'startButton';
         startButton.textContent = 'Start';
 
@@ -92,9 +92,17 @@ class TimerView {
             }
         );
 
+
         divButtons.appendChild(stopButton);
         divButtons.appendChild(pheromones);
         div.appendChild(startButton);
+
+        let game = this;
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === 'hidden' && startButton.textContent === 'Pause') {
+                game.pauseTimer();
+            }
+        });
     }
 
     displayTimer(seconds, centiseconds) {

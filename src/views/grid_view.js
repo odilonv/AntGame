@@ -48,6 +48,9 @@ class GridView {
                     }
                     else if (startButton.textContent === 'Resume') {
                         this.handleGame('resume');
+                        if (document.getElementById('pauseNotif')) {
+                            document.body.removeChild(document.getElementById('pauseNotif'));
+                        }
                         startButton.textContent = 'Pause';
 
                     }
@@ -58,20 +61,15 @@ class GridView {
         div.appendChild(this.canvas);
 
         let game = this;
-
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === 'hidden' && startButton.textContent === 'Pause') {
                 game.handleGame('pause');
                 startButton.textContent = 'Resume';
             } else if (startButton.textContent === 'Resume') {
                 let notification = document.createElement('div');
-                notification.textContent = 'Le jeu a été mis en pause';
+                notification.textContent = 'You have left the page. The game has been paused.';
                 notification.id = 'pauseNotif';
                 document.body.appendChild(notification);
-
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 5000);
             }
         });
 
