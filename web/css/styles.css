@@ -13,6 +13,13 @@ body {
     width: 100%;
 }
 
+@media (max-width: 1200px) {
+    #main {
+        gap: 30px;
+        flex-direction: column;
+    }
+}
+
 #my_canvas {
     border: 3px solid white;
     background-color: #72751B;

@@ -114,7 +114,7 @@ class GridView {
             this.ctx.font = "10px Arial";
 
             this.ctx.fillStyle = this.getColorFromQty(value);
-            this.ctx.fillText(value.toFixed(2), j * this.cellSize + 23, i * this.cellSize + 40);
+            this.ctx.fillText(Math.abs(value.toFixed(2)), j * this.cellSize + 23, i * this.cellSize + 40);
         }
         else if (cube._qtyPheromonesFromBegining > 0) {
             let value = cube._qtyPheromonesFromBegining;
@@ -152,7 +152,7 @@ class GridView {
             else if (value < 0.06)
                 return "#79bc79";
             else
-                return "#b98d0d";
+                return "#ced41c";
         }
     }
 

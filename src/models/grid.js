@@ -194,7 +194,6 @@ class Grid {
             agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
             if (agent.objective != undefined && movePossibles.includes(agent.getDirectionFromObjective())) {
                 if (agent.isDirectionInverse(agent.getDirectionFromObjective())) {
-                    console.log("test");
                     agent.x = this.cellStart.y;
                     agent.y = this.cellStart.x;
                     return movePossibles[Math.floor(Math.random() * movePossibles.length)];
