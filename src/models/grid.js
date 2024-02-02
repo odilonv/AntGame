@@ -193,6 +193,9 @@ class Grid {
         if (agent.capacity == 0) {
             agent.objective = agent.listOfPaths[agent.listOfPaths.indexOf(this.grid[column][row]) - 1];
             if (agent.objective != undefined && movePossibles.includes(agent.getDirectionFromObjective())) {
+                if (agent.isDirectionInverse(agent.getDirectionFromObjective())) {
+                    console.log("test");
+                }
                 return agent.getDirectionFromObjective();
             }
         }
@@ -234,7 +237,7 @@ class Grid {
             movePossiblesNotInPath.push("right");
         }
 
-        if (movePossiblesNotInPath.length > 0 && Math.random < 0.3) {
+        if (movePossiblesNotInPath.length > 0 && Math.random() < 0.3) {
             return movePossiblesNotInPath[Math.floor(Math.random() * movePossiblesNotInPath.length)];
         }
         else {
@@ -242,34 +245,25 @@ class Grid {
             let directionMaxPheromones;
             do {
                 directionMaxPheromones = movePossibles[Math.floor(Math.random() * movePossibles.length)];
-            } while (directionMaxPheromones == agent.getDirectionInverse());
-            if (movePossibles.includes("up") && this.grid[column][row - 1]._qtyPheromonesFromBegining > directionMaxPheromones) {
+            } while (agent.isDirectionInverse(directionMaxPheromones));
+            if (movePossibles.includes("up") && !agent.isDirectionInverse("up") && this.grid[column][row - 1]._qtyPheromones > maxPheromones) {
+                maxPheromones = this.grid[column][row - 1]._qtyPheromones;
                 directionMaxPheromones = "up";
-            } else if (movePossibles.includes("down") && this.grid[column][row + 1]._qtyPheromonesFromBegining > directionMaxPheromones) {
+            }
+            if (movePossibles.includes("down") && !agent.isDirectionInverse("down") && this.grid[column][row + 1]._qtyPheromones > maxPheromones) {
+                maxPheromones = this.grid[column][row + 1]._qtyPheromones;
                 directionMaxPheromones = "down";
-            } else if (movePossibles.includes("left") && this.grid[column - 1][row]._qtyPheromonesFromBegining > directionMaxPheromones) {
+            }
+            if (movePossibles.includes("left") && !agent.isDirectionInverse("left") && this.grid[column - 1][row]._qtyPheromones > maxPheromones) {
+                maxPheromones = this.grid[column - 1][row]._qtyPheromones;
                 directionMaxPheromones = "left";
-            } else if (movePossibles.includes("right") && this.grid[column + 1][row]._qtyPheromonesFromBegining > directionMaxPheromones) {
+            }
+            if (movePossibles.includes("right") && !agent.isDirectionInverse("right") && this.grid[column + 1][row]._qtyPheromones > maxPheromones) {
+                maxPheromones = this.grid[column + 1][row]._qtyPheromones;
                 directionMaxPheromones = "right";
             }
             return directionMaxPheromones;
         }
-
-
-
-        if (!movePossibles.includes(agent.direction)) {
-            return movePossibles[Math.floor(Math.random() * movePossibles.length)];
-        }
-
-        if (Math.random() < 0.1) {
-            const direction = movePossibles[Math.floor(Math.random() * movePossibles.length)];
-            if (!agent.isDirectionInverse(direction)) {
-                return direction;
-            }
-        }
-
-
-        return agent.direction;
     }
 
     movePossibles(agent) {

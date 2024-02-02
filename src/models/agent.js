@@ -53,18 +53,6 @@ class Agent {
         return false;
     }
 
-    getDirectionInverse() {
-        if (this.direction == "up") {
-            return "down";
-        } else if (this.direction == "down") {
-            return "up";
-        } else if (this.direction == "left") {
-            return "right";
-        } else if (this.direction == "right") {
-            return "left";
-        }
-    }
-
     isDirectionInverse(direction) {
         if (this.direction == "up" && direction == "down") {
             return true;
