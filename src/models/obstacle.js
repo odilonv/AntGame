@@ -13,6 +13,7 @@ class Obstacle extends Cell {
         shadowTile.src = 'web/images/tiles/shadow.png';
         return [shadowTile, this.tile];
     }
+    getTileIndex() { return this.tileIndex; }
 }
 
 export default Obstacle;

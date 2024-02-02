@@ -11,7 +11,7 @@ class Free extends Cell {
     }
 
     getTile() { return this.tile; }
-
+    getTileIndex() { return this.tileIndex; }
 }
 
 export default Free;

@@ -3,7 +3,7 @@ import Free from './free.js';
 import Start from './start.js';
 import Objective from './objective.js';
 import Agent from './agent.js';
-import Game from './game.js'
+import Remote from './remote.js'
 
 
 class Grid {
@@ -62,11 +62,11 @@ class Grid {
         while (this.grid[this.cellStart.x][this.cellStart.y] instanceof Obstacle);
         this.grid[this.cellStart.x][this.cellStart.y] = this.cellStart;
 
-        for (let nbAnt = 0; nbAnt < Game.nbAnts; nbAnt++) { // on génère les fourmis
+        for (let nbAnt = 0; nbAnt < Remote.nbAnts; nbAnt++) { // on génère les fourmis
             this.ants.push(new Agent(this.cellStart.y, this.cellStart.x));
         }
 
-        for (let i = 0; i < Math.floor(Math.random() * (Game.nbAnts - 2)) + 10; i++) {
+        for (let i = 0; i < Math.floor(Math.random() * (Remote.nbAnts - 2)) + 10; i++) {
             let objectiveRow = Math.floor(Math.random() * (this.size - 2)) + 1;
             let objectiveCol = Math.floor(Math.random() * (this.size - 2)) + 1;
             if (this.grid[objectiveRow][objectiveCol] instanceof Obstacle || this.grid[objectiveRow][objectiveCol] instanceof Start) {
@@ -169,8 +169,8 @@ class Grid {
             if (agent.capacity == 0) {
                 for (const cell of agent.listOfPaths) {
                     if (cell.getType() == "Free") {
-                        cell._qtyPheromones += (Game._QParameter / agent.listOfPaths.length);
-                        cell._qtyPheromonesFromBegining += (Game._QParameter / agent.listOfPaths.length);
+                        cell._qtyPheromones += (Remote._QParameter / agent.listOfPaths.length);
+                        cell._qtyPheromonesFromBegining += (Remote._QParameter / agent.listOfPaths.length);
                     }
                 }
             }
@@ -239,7 +239,7 @@ class Grid {
         }
         else {
             let maxPheromones = 0;
-            let directionMaxPheromones; 
+            let directionMaxPheromones;
             do {
                 directionMaxPheromones = movePossibles[Math.floor(Math.random() * movePossibles.length)];
             } while (directionMaxPheromones == agent.getDirectionInverse());
@@ -324,10 +324,10 @@ class Grid {
         this.startTime = currentTime;
         this.timer += deltaTime;
 
-        while (_lag >= Game._frameDuration) {
+        while (_lag >= Remote._frameDuration) {
             this.moveAnts();
             this.getCubes();
-            _lag -= Game._frameDuration;
+            _lag -= Remote._frameDuration;
         }
 
         requestAnimationFrame(this.update.bind(this));

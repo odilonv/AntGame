@@ -1,4 +1,4 @@
-import Game from "./game.js";
+import Remote from "./remote.js";
 
 class Agent {
     constructor(row, column) {
@@ -41,13 +41,13 @@ class Agent {
     }
 
     isAtTheCenterOfTheCell() {
-        if (this.direction == "up" && this.row - parseInt(this.row) > 0.1 && this.row - parseInt(this.row) + Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps < 0.1) {
+        if (this.direction == "up" && this.row - parseInt(this.row) > 0.1 && this.row - parseInt(this.row) + Math.sin(Math.PI / 2) * -1 * Remote._speed / Remote._fps < 0.1) {
             return true;
-        } else if (this.direction == "down" && this.row - parseInt(this.row) < 0.1 && this.row - parseInt(this.row) + Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps > 0.1) {
+        } else if (this.direction == "down" && this.row - parseInt(this.row) < 0.1 && this.row - parseInt(this.row) + Math.sin(3 * (Math.PI / 2)) * -1 * Remote._speed / Remote._fps > 0.1) {
             return true
-        } else if (this.direction == "left" && this.column - parseInt(this.column) > 0.1 && this.column - parseInt(this.column) + Math.cos(Math.PI) * Game._speed / Game._fps < 0.1) {
+        } else if (this.direction == "left" && this.column - parseInt(this.column) > 0.1 && this.column - parseInt(this.column) + Math.cos(Math.PI) * Remote._speed / Remote._fps < 0.1) {
             return true
-        } else if (this.direction == "right" && this.column - parseInt(this.column) < 0.1 && this.column - parseInt(this.column) + Math.cos(0) * Game._speed / Game._fps > 0.1) {
+        } else if (this.direction == "right" && this.column - parseInt(this.column) < 0.1 && this.column - parseInt(this.column) + Math.cos(0) * Remote._speed / Remote._fps > 0.1) {
             return true
         }
         return false;
@@ -80,16 +80,16 @@ class Agent {
 
     move() {
         if (this.direction === 'down') {
-            this.row += Math.sin(3 * (Math.PI / 2)) * -1 * Game._speed / Game._fps;
+            this.row += Math.sin(3 * (Math.PI / 2)) * -1 * Remote._speed / Remote._fps;
         }
         else if (this.direction === 'up') {
-            this.row += Math.sin(Math.PI / 2) * -1 * Game._speed / Game._fps;
+            this.row += Math.sin(Math.PI / 2) * -1 * Remote._speed / Remote._fps;
         }
         else if (this.direction === 'right') {
-            this.column += Math.cos(0) * Game._speed / Game._fps;
+            this.column += Math.cos(0) * Remote._speed / Remote._fps;
         }
         else if (this.direction === 'left') {
-            this.column += Math.cos(Math.PI) * Game._speed / Game._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
+            this.column += Math.cos(Math.PI) * Remote._speed / Remote._fps; // On divise par les fps car la fonction est appelée selon un fps donné (#cellGrid/seconde).
         }
     }
 }
