@@ -109,6 +109,7 @@ class GridView {
 
     displayFree(i, j, cube, qtyMax) {
         this.ctx.clearRect(j * this.cellSize + 19, i * this.cellSize + 20, 30, 30);
+        this.ctx.drawImage(cube.getTile(), cube.tileIndex[0], cube.tileIndex[1], cube.tileSize, cube.tileSize, j * this.cellSize + 20, i * this.cellSize + 20, 30, 30);
         if (!this._displayPheromones) {
             let value = cube._qtyPheromones;
 
